@@ -1,0 +1,310 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>JavaScript作用域与闭包 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="JavaScript作用域与闭包 在读《JavaScript权威指南》和《JavaScript高级程序设计》的时候感觉俩本书对JS的作用域讲的都不太清晰，于是就自己总结了一下。 执行环境和作用域 执行环境就是JS代码执行时所在的环境，每个执行环境都有一个与之关联的变量对象， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2013/03/28/javascriptzuo-yong-yu-yu-bi-bao/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">JavaScript作用域与闭包</h1>
+	<div class="entry-content" itemprop="articleBody"><p>在读《JavaScript权威指南》和《JavaScript高级程序设计》的时候感觉俩本书对JS的作用域讲的都不太清晰，于是就自己总结了一下。</p>
+
+<h3>执行环境和作用域</h3>
+
+<p>执行环境就是JS代码执行时所在的环境，每个执行环境都有一个与之关联的<strong>变量对象</strong>，这个对象中就保存着执行环境中的<strong>所有变量和函数</strong>。全局执行环境是最外围的执行环境，也就是window对象了，所以我们定义的全局变量和函数都保存在window对象中。</p>
+
+<p>对于函数来说，每个函数都有一个自己执行环境。</p>
+
+<p>当代码在环境中执行时，会创建一个作用域链，其实就是代码所在的一个个执行环境（嵌套的）的变量对象（函数除外，之后讨论）做成的链，链的最前面当然是变量直接所在的执行环境的变量对象，之后依次是嵌套包含的上级执行环境的变量对象，全局执行环境的变量对象位于链的末尾。使用一个变量时就会从变量的作用域链头部开始往后查找直到找到这个变量。</p>
+
+<p>而<strong>函数</strong>就有些特殊了，函数是通过词法来划分作用域的，在函数定义时，它的作用域链就保存了起来，而并不是执行函数的时候创建的作用域链，这也就是为什么会有闭包这个现象了。函数的作用域链中的变量对象是函数的调用对象（活动对象），调用对象中保存有函数的参数，函数中定义的局部变量。这里注意的是this是一个关键字，并不是调用对象的一个属性，this和arguments都是在函数<strong>执行时</strong>，调用对象取得的，this代表的就是函数据以执行的执行环境</p>
+
+<h3>闭包</h3>
+
+<p>闭包的<strong>定义</strong>：有权访问另一个函数作用域中的变量的函数。简单讲就是在一个函数内部又创建了一个函数。下面讲讲闭包需要注意的问题：</p>
+
+<h4>1. 内存泄漏</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">outer</span><span class="p">(</span><span class="nx">param</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">param</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// 创建函数</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">inner</span> <span class="o">=</span> <span class="nx">outer</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 调用函数</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">inner</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面就是一个简单的闭包的例子，正常来看是没什么问题，<code>outer()</code>函数返回后它的作用域链会被销毁，但是它内部的匿名函数的作用域链依然引用<code>outer()</code>函数的调用对象，致使<code>outer()</code>函数的调用对象依然留在内存中。所以我们需要解除对匿名函数的引用。</p>
+
+<pre><code>// 解除对匿名函数的引用，以便释放内存
+inner = null;
+</code></pre>
+
+<!-- more -->
+
+
+<p>再看下面这个例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">handler</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">ele</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;someone&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ele</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">alert</span><span class="p">(</span><span class="nx">ele</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果闭包的作用域链中保存着一个HTML元素，那么将使得该元素无法被销毁。上面的例子创建了一个元素的<code>onclick</code>事件的处理程序的闭包，由于匿名函数一直保持着<code>handler()</code>函数的调用对象，使得只要匿名函数存在，对于HTMl element元素的引用就至少为1,而它所占用的内存也就一直得不到回收。这就需要我们手动显示的收回引用。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">handler</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">ele</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;someone&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">ele</span><span class="p">.</span><span class="nx">id</span>
+</span><span class='line'>    <span class="nx">ele</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="nx">alert</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">ele</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2. this对象问题</h4>
+
+<blockquote><p>匿名函数的执行环境具有全局性，因此this对象通常指向window</p></blockquote>
+
+<p>在闭包中使用this对象可能也会导致问题。看下面的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;window&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">getName</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">alert</span><span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">getName</span><span class="p">()());</span>      <span class="c1">// &quot;window&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>会alert出&#8221;window&#8221;，是不是感觉很奇怪？</p>
+
+<p>上面提到过，this对象是函数被调用时，调用对象取得的，内部函数在沿着作用域链搜素this的值的时候，首先就会搜索到它自己的调用对象，就可以找到this变量了，这样根本就不可能访问外部函数的this变量。解决这个问题很简单，只要将this对象保存到闭包访问的到的变量里就可以了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;window&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">name</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">getName</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">thit</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="JavaScript作用域与闭包"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

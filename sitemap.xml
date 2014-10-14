@@ -2,19 +2,152 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   
+  <url>
+    <loc>http://wibud.github.io/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/</loc>
+    
+    <lastmod>2014-01-09T15:17:48+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/12/20/octopresszhu-ti/</loc>
+    
+    <lastmod>2013-12-20T17:52:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/08/05/gethe-postqing-qiu/</loc>
+    
+    <lastmod>2013-08-05T11:12:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/08/03/cookieyu-session/</loc>
+    
+    <lastmod>2013-08-03T11:11:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/08/02/ajaxxiang-guan-zong-jie/</loc>
+    
+    <lastmod>2013-08-02T11:09:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/07/27/httptou-xin-xi/</loc>
+    
+    <lastmod>2013-07-27T11:08:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/07/15/fan-shi/</loc>
+    
+    <lastmod>2013-07-15T11:04:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/07/11/css-hack/</loc>
+    
+    <lastmod>2013-07-11T11:02:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/07/08/floatxiao-xi-jie/</loc>
+    
+    <lastmod>2013-07-08T10:28:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/</loc>
+    
+    <lastmod>2013-05-31T22:06:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/04/03/pao-kai-jian-rong-pan-duan-,ke-kao-de-domshi-jian-bang-ding/</loc>
+    
+    <lastmod>2013-04-03T17:17:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/03/30/jsshi-xian-si-you-cheng-yuan/</loc>
+    
+    <lastmod>2013-03-30T12:19:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/03/28/javascriptzuo-yong-yu-yu-bi-bao/</loc>
+    
+    <lastmod>2013-03-28T20:11:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/2013/02/23/da-jian-octopressyu-dao-de-keng/</loc>
+    
+    <lastmod>2013-02-23T20:16:00+08:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
   
   <url>
     <loc>http://wibud.github.io/blog/archives/</loc>
-    <lastmod>2014-09-15T22:29:45+08:00</lastmod>
+    <lastmod>2014-10-15T00:38:46+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://wibud.github.io/</loc>
-    <lastmod>2014-09-15T22:29:45+08:00</lastmod>
+    <lastmod>2014-10-15T00:38:46+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/posts/</loc>
+    <lastmod>2014-10-15T00:38:46+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/about/</loc>
+    <lastmod>2014-10-15T00:38:46+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>http://wibud.github.io/blog/categories/</loc>
+    <lastmod>2014-10-15T00:38:46+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   
   

@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: js | Winter Bud]]></title>
+  <link href="http://wibud.github.io/blog/categories/js/atom.xml" rel="self"/>
+  <link href="http://wibud.github.io/"/>
+  <updated>2014-10-15T00:38:46+08:00</updated>
+  <id>http://wibud.github.io/</id>
+  <author>
+    <name><![CDATA[wibud]]></name>
+    <email><![CDATA[wi_bud@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JavaScript严格模式详解]]></title>
+    <link href="http://wibud.github.io/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/"/>
+    <updated>2014-01-09T15:17:48+08:00</updated>
+    <id>http://wibud.github.io/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie</id>
+    <content type="html"><![CDATA[<h2>一、简介</h2>
+
+<p>严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性，目的是让JavaScript在更为严格的条件下运行，减少怪异行为和语言不合理的地方，提高编译运行性能（比如禁用with语句），增强了代码本身的安全性。</p>
+
+<p>在ES5之前的版本是不支持严格模式的，但是严格模式有很好的向后兼容性，因为低版本标准的引擎会忽略严格模式的声明，这个会在之后进行介绍。</p>
+
+<p>想了解各浏览器对于严格模式的支持情况戳这里<a href="http://kangax.github.io/es5-compat-table/">ECMAScript 5 compatibility table</a>，其中还统计了ES5新增特性的兼容情况。</p>
+
+<h2>二、声明</h2>
+
+<p>声明调用严格模式十分简单，也有些怪异，使用字符串字面量：</p>
+
+<pre><code class="javascript">    "use strict";
+</code></pre>
+
+<p>之所以使用字符串字面量好处就是可以向后兼容，对于不支持严格模式的引擎，执行这条语句没有任何作用和影响。当然，如果我们使用了严格模式，那么就需要使用支持严格模式的引擎进行测试，使用低版本的引擎无法检测出严格模式下的错误。</p>
+
+<p>声明方式有如下两种：</p>
+
+<ul>
+<li>1、声明整个脚本</li>
+</ul>
+
+
+<p>将<code>"use strict;"</code>在脚本文件第一行，且必须是第一行，否则严格模式将无效。</p>
+
+<blockquote><p>在<code>"use strict;"</code>前不能有任何执行语句，即使是一个空的分号，都会使严格模式失效。</p></blockquote>
+
+<p><code>&lt;script&gt;</code>包含的脚本块和引入的外部文件对于严格模式来说都是相互独立的，也就是说，一个脚本块或脚本文件设置成严格模式执行，并不会影响到其他的脚本块和脚本文件。</p>
+
+<pre><code class="javascript">    &lt;script&gt;
+        "use strict";
+        console.log("严格模式");
+    &lt;/script&gt;
+    &lt;script&gt;
+        console.log("正常模式");
+    &lt;/script&gt;
+</code></pre>
+
+<ul>
+<li>2、声明单个函数体</li>
+</ul>
+
+
+<p>单个函数的声明和整个脚本的类似，需要将<code>"use strict;"</code>放在函数体的第一行。这样该函数就会以严格模式运行。</p>
+
+<pre><code class="javascript">    function f(){
+        "use strict";
+        // ...
+    }
+</code></pre>
+
+<!-- more -->
+
+
+<p>在大型多人合作的项目中使用严格模式，就需要多加注意了。因为，在开发中可能使用了多个脚本文件，而在部署时，会将多个文件合并成一个，如果有的脚本文件使用严格模式，而有的并没有使用，那么合并起来就可能导致意想不到的问题。比如，需要使用严格模式的地方失效了，而不需要使用严格模式的地方反而运行在严格模式下了。</p>
+
+<p>对于此类问题，有如下两种的解决方法：</p>
+
+<ul>
+<li>1、不将严格模式运行的文件和正常模式运行的文件合并起来。</li>
+</ul>
+
+
+<p>这应该是最简单的解决方法了，那么你在部署的时候就至少需要两个独立的脚本文件。但这样无疑会对你的文件管理增加负担。</p>
+
+<ul>
+<li>2、使用独立作用域（立即调用的函数表达式）</li>
+</ul>
+
+
+<p>将脚本文件内容包含再立即调用的函数表达式中，就好像模块一样。</p>
+
+<pre><code class="javascript">    (function(){
+        "use strict";
+        function f(){
+            // ...
+        };
+        // ...
+    })();
+</code></pre>
+
+<p>这样合并成一个文件以后就不会相互影响了</p>
+
+<h2>三、严格模式的限制</h2>
+
+<p>以下列出了严格模式最主要的限制。</p>
+
+<ul>
+<li>1、变量必须使用var声明</li>
+</ul>
+
+
+<p>正常模式下，未声明的变量，默认是全局变量，而在严格模式下，必须对变量进行声明，否则会报错：“SCRIPT5042：严格模式下未定义变量”。</p>
+
+<pre><code class="javascript">    "use strict";
+    testValue = 1;  // 报错
+    for(i=0; i&lt;10; i++){    // 报错
+        // ...
+    }
+</code></pre>
+
+<ul>
+<li>2、禁止写入只读属性</li>
+</ul>
+
+
+<p>正常模式下，对对象的只读属性进行赋值，不会出现错误，只是会默认失效，而在严格模式下，写入只读属性（包括使用get进行读取的属性）会报错：“SCRIPT5045：严格模式下不允许分配到只读属性”。</p>
+
+<pre><code class="javascript">    "use strict";
+    var testObj = Object.defineProperties({}, {
+        prop1: {
+            value: 10,
+            writable: false // by default
+        },
+        prop2: {
+            get: function () {}
+        }
+    });
+    testObj.prop1 = 20;     // 报错
+    testObj.prop2 = 30;     // 报错
+</code></pre>
+
+<ul>
+<li>3、禁止为不可扩展的对象新增属性</li>
+</ul>
+
+
+<p>正常模式下，为不可扩展的对象添加属性不会报错，只会默认失效，而在严格模式下，会报错：“SCRIPT5046：无法为不可扩展的对象创建属性”。</p>
+
+<pre><code class="javascript">    "use strict";
+    var testObj = new Object();
+    Object.preventExtensions(testObj);
+    testObj.name = "Bob";   // 报错
+</code></pre>
+
+<ul>
+<li>4、禁止删除变量、函数、参数和configurable为false的属性</li>
+</ul>
+
+
+<p>在严格模式下，只有configurable特性设置为true的对象属性才可以被删除，否则将报错：“SCRIPT1045：严格模式下不允许对 &lt;表达式> 调用 Delete”。</p>
+
+<pre><code class="javascript">    "use strict";
+    var testvar = 15;
+    function testFunc() {};
+    delete testvar;     // 报错
+    delete testFunc;    // 报错
+
+    Object.defineProperty(testObj, "testvar", {
+        value: 10,
+        configurable: false
+    });
+    delete testObj.testvar;     // 报错
+</code></pre>
+
+<ul>
+<li>5、禁止对象属性名重复</li>
+</ul>
+
+
+<p>正常模式下，如果对象的属性名重复，那么后一个属性的值会覆盖前一个同名属性的值，而在严格模式下，如果对象有同名属性，则会报错：“SCRIPT1046：严格模式下不允许一个属性有多个定义”。</p>
+
+<pre><code class="javascript">    "use strict";
+    var testObj = {
+        prop1: 10,
+        prop2: 15,
+        prop1: 20
+    };  // 报错
+</code></pre>
+
+<ul>
+<li>6、禁止函数参数名重复</li>
+</ul>
+
+
+<p>正常模式下，如果函数有多个重名参数，则可以使用argument[i]来读取相应的参数，而在严格模式下，如果函数存在参数重名，则会报错：“SCRIPT1038：严格模式下不允许正式参数名称重复”。</p>
+
+<pre><code class="javascript">    "use strict";
+    function testFunc(param1, param1) {
+        return;
+    };  // 报错
+</code></pre>
+
+<ul>
+<li>7、保留关键字</li>
+</ul>
+
+
+<p>为了向将来Javascript的新版本过渡，严格模式新增了一些保留字：implements, interface, let, package, private, protected, public, static, yield。</p>
+
+<p>在严格模式下，使用这些这些保留字做变脸或函数名都会报错：“SCRIPT1050：无法使用标识符的未来保留字。 严格模式下将保留标识符名称。”</p>
+
+<blockquote><p>此外，ECMAscript第五版本身还规定了另一些保留字（class, enum, export, extends, import, super），以及各大浏览器自行增加的const保留字，也是不能作为变量名的。</p></blockquote>
+
+<ul>
+<li>8、禁止八进制数值</li>
+</ul>
+
+
+<p>正常模式下，整数数值的第一位如果是0，表示是八进制数，而在严格模式下，禁止对数值文本分配八进制值，或尝试对八进制值使用转义，否则报错：“SCRIPT1039：严格模式下不允许使用八进制数字参数和转义字符”。</p>
+
+<pre><code class="javascript">    "use strict";
+    var testoctal = 010;    // 报错
+    var testescape = \010;  // 报错
+</code></pre>
+
+<ul>
+<li>9、禁止this指向全局对象</li>
+</ul>
+
+
+<p>在严格模式下，当 this 的值为 null 或 undefined 时，该值不会转换为全局对象，比如：</p>
+
+<pre><code class="javascript">    "use strict";
+    function testFunc() {
+        return this;
+    }
+    var testvar = testFunc();
+</code></pre>
+
+<p>在正常的模式下，testvar的值为全局对象，但在严格模式下，该值为 undefined。</p>
+
+<p>再比如：</p>
+
+<pre><code class="javascript">    function f(){
+　　　　return !this;
+　　}
+　　// 返回false，因为"this"指向全局对象，"!this"就是false
+　　function f(){
+　　　　"use strict";
+　　　　return !this;
+　　}
+　　// 返回true，因为严格模式下，this的值为undefined，所以"this"为true。
+</code></pre>
+
+<p>因此，使用构造函数时，如果忘了加new，this不再指向全局对象，而是报错。</p>
+
+<pre><code class="javascript">    function f(){
+　　　　"use strict";
+　　　　this.a = 1;
+　　}
+　　f();// 报错，this未定义
+</code></pre>
+
+<p>需要注意的是在IE10的PP2版（支持严格模式）中对于严格模式下得this存在bug，对于<code>(function(){ "use strict"; return !this })()</code>返回的是false。</p>
+
+<ul>
+<li><p>10、禁止“eval”用作标示符（变量、函数名、参数名等）</p></li>
+<li><p>11、eval具有独立作用域</p></li>
+</ul>
+
+
+<p>正常模式下，eval语句的作用域，取决于它处于全局作用域，还是处于函数作用域。严格模式下，eval语句本身就是一个作用域，不再能够生成全局变量了，它所生成的变量只能用于eval内部。</p>
+
+<pre><code class="javascript">    "use strict";
+    var indirectEval = eval;
+    indirectEval("var testvar = 10;");
+    document.write(testVar);    // 报错，testVar未定义
+</code></pre>
+
+<ul>
+<li>12、禁止在语句或块内声明函数</li>
+</ul>
+
+
+<p>严格模式只允许在全局作用域或函数作用域的顶层声明函数。也就是说，不允许在非函数的代码块内声明函数，否则将会报错：“SCRIPT1047：在严格模式下，函数声明无法嵌套在语句或块中。 它们只能显示在顶级或直接显示在函数体中。”</p>
+
+<pre><code class="javascript">    "use strict";
+    var arr = [1, 2, 3, 4, 5];
+    var index = null;
+    for (index in arr) {
+        function myFunc() {};   // 报错
+    }
+</code></pre>
+
+<ul>
+<li><p>13、禁止“arguments”用作标示符（变量、函数名、参数名等）</p></li>
+<li><p>14、禁止对arguments对象赋值</p></li>
+<li><p>15、arguments不再影响和追踪参数值</p></li>
+</ul>
+
+
+<pre><code class="javascript">    function f(a) {
+　　  "use strict";
+　　  a++；
+　　  return [a, arguments[0]];
+　　 }
+　　f(1); // [2,1]
+　　
+　　function f(a) {
+　　  "use strict";
+　　  arguments[0]++；
+　　  return [a, arguments[0]];
+　　 }
+　　 f(1);    // [1,2]
+</code></pre>
+
+<p>在严格模式下，arguments对象只是一个本地副本。</p>
+
+<ul>
+<li>16、禁止使用arguments.callee</li>
+</ul>
+
+
+<pre><code class="javascript">    "use strict";
+　　var f = function() { return arguments.callee; };
+　　f(); // 报错
+</code></pre>
+
+<ul>
+<li>17、禁止使用with</li>
+</ul>
+
+
+<pre><code class="javascript">    "use strict";
+　　with (Math){
+        x = cos(3);
+        y = tan(7);
+    }
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[cookie与session]]></title>
+    <link href="http://wibud.github.io/blog/2013/08/03/cookieyu-session/"/>
+    <updated>2013-08-03T11:11:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/08/03/cookieyu-session</id>
+    <content type="html"><![CDATA[<h2>Cookie</h2>
+
+<p>HTTP Cookie，通常直接叫做cookie，是在客户端用户存储会话信息的。cookie存储的信息是由服务器经HTTP头作为响应发给客户端的。例如服务器相应可能如下：</p>
+
+<pre><code>HTTP/1.1 200 OK
+Content-type:text/html
+Set-Cookie:name=value
+</code></pre>
+
+<p>其中的<code>Set-Cookie</code>包含着会话信息，浏览器会存储这些会话信息，之后会为每个请求添加Cookie HTTP头，将信息发送回服务器，如下</p>
+
+<pre><code>GET /index.html HTTP/1.1
+Cookie:name=value
+</code></pre>
+
+<p>因为Cookie是存储在浏览器上，浏览器资源有限，所以Cookie的个数和大小会有限制，不同的浏览器对Cookie 的限制不同，有的限制每个域只能有20个Cookie，且每个域Cookie总大小限制在4095B，有的浏览器可能会多些。</p>
+
+<h3>Cookie构成</h3>
+
+<ul>
+<li>名称：唯一确定cookie，名称是不区分大小写的</li>
+<li>值：存储在cookie中的字符串的值，必须被URL编码</li>
+<li>域：表示cookie对哪个域是有效的，所有向该有效域发送的请求都会加上这个cookie信息。如果没有设置，默认是设置cookie的域</li>
+<li>路径：对于制定域中的那个路径，应该向服务器发送cookie</li>
+<li>失效时间：表示cookie应该何时被删除。如果不设定，默认情况下，浏览器会话结束就会删除cookie（会话cookie）。如果设置了时间（大于当前时间），则浏览器关闭后cookie依然会保存在用户机器上（持久cookie）。这个值是GMT格式的日期。</li>
+<li>安全标志</li>
+</ul>
+
+
+<h3>Javascript操作cookie</h3>
+
+<p> <code>document.cookie</code>属性返回当前页面可用的（根据cookie的域、路径、失效时间和安全设置）所有cookie的字符串，一系列由分号分隔的名值对，如下：</p>
+
+<pre><code>name1=value1;name2=value2;name3=value3
+</code></pre>
+
+<p>所有名字和值都是URL编码的，所以必须使用<code>decodeURIComponent()</code>解码。</p>
+
+<p>设置值得时候，可以直接给<code>document.cookie</code>属性赋值，并不会覆盖cookie，除非设置的cookie名称已经存在。</p>
+
+<p>由于cookie操作比较麻烦，并不直观，下面来看一个简化cookie操作的功能对象：</p>
+
+<pre><code class="javascript">
+    var CookieUtil={
+
+        get: function(name){
+            var cookieName = encodeURIComponent(name)+"=",
+                cookieStart = document.cookie.indexof(cookieName);
+                cookieValue = null;
+
+            if(cookieStart &gt; -1){
+                var cookieEnd = document.cookie.indexof(";",cookieStart);
+                if(cookieEnd == -1){
+                    cookieEnd = document.cookie.length;
+                }
+                cookieValue = decodeURIComponent(document.cookie.substring(cookieStart+cookieName.length, cookieEnd));
+            }
+
+            return cookieValue
+        }
+
+        set: function(name, value, expires, path, domain, secure){
+            var cookieText = encodeURIComponent(name)+"="+encodeURIComponent(value);
+
+            if(expires instanceof Date){
+                cookieText += "; expires=" + expires.toGMTString();
+            }
+
+            if(path){
+                cookieText += "; path=" + path;
+            }
+
+            if(domain){
+                cookieText += "; domain=" + domain;
+            }
+
+            if(secure){
+                cookieText += "; secure";
+            }
+
+            document.cookie = cookieText;
+        }
+    }
+</code></pre>
+
+<!-- more -->
+
+
+<h2>Session</h2>
+
+<p>Session机制是一种服务器端维持会话状态的机制。每个session唯一的由一个session id标示，session id是存储在客户端的，由客户端请求时发给服务器来与相应的session建立联系。</p>
+
+<p>session id一般来说是保存在cookie中，当然如果cookie被禁用了，我们就需要其他的存储手段，比如：URL重写，就是把session id附加到URL路径的后面，还有一种技术叫表单隐藏字段，给表单添加一个隐藏字段。</p>
+
+<h3>Session什么时候创建</h3>
+
+<p>session是在服务器端程序调用HttpServletRequest.getSession(true)这样的语句时才被创建，而不是客户端访问的时候被创建的。</p>
+
+<p>注意JSP如果没有显示的关闭session，会自动创建session。</p>
+
+<h3>Session什么时候被删除</h3>
+
+<ul>
+<li>程序调用<code>HttpSession.invalidate()</code></li>
+<li>session超时</li>
+<li>服务器进程停止</li>
+</ul>
+
+
+<p>要注意的是session id一般是保存在会话cookie中，会话cookie会在浏览器关闭之后被删除，于是，相应的session id也会被删除，但是这时并不代表session也被删除了，服务器会一直保留session直到session处于非活动状态的时间超过了设置的超时时间，这时才会删除session。</p>
+
+<h2>Cookie与Session的区别</h2>
+
+<p>cookie机制采用的是在客户端保持状态的机制，cookie信息保存在客户端。cookie存储空间小。</p>
+
+<p>session机制采用的是服务器端保持状态的机制，session信息保存在服务器端。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[监听DOM加载完毕]]></title>
+    <link href="http://wibud.github.io/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/"/>
+    <updated>2013-05-31T22:06:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/05/31/jian-ting-domjia-zai-wan-bi</id>
+    <content type="html"><![CDATA[<p>我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下：</p>
+
+<ul>
+<li>解析HTML</li>
+<li>下载外部脚本样式</li>
+<li>脚本解析执行</li>
+<li>DOM完全构建完成</li>
+<li>图片等外部资源加载</li>
+<li>网页加载完毕</li>
+</ul>
+
+
+<p>那如何判断DOM是否加载完毕呢？使用body的onload事件进行监听？当然可以，但是body的onload是在所有内容，包括图片、flash啊等等内容全部加载后才触发，导致用户需要等待这部分内容加载后才能看到页面的动态内容，才能同页面进行交互，对于追(ti)求(gao)极(bi)致(ge)的程序猿来说，显然是不能接受的了，其实，只要检查如下3点足矣</p>
+
+<ul>
+<li>document</li>
+<li>document.getElementByTagName和document.getElementById</li>
+<li>document.body</li>
+</ul>
+
+
+<p>检查这三点就足够了。接着我们就可以写一个监听DOM何时加载完毕的函数了。</p>
+
+<pre><code class="javascript">    function domReady(f){
+
+        // 假如DOM已经加载，马上执行函数
+        if(domReady.done)
+            return f();
+        // 如果已经添加了一个函数
+        if(domReady.timer){
+            // 把它加入待执行函数清单
+            domReady.ready.push(f);
+        }else{
+            // 初始化待执行函数的数组
+            domReady.ready = [f];
+
+            // 尽可能块的检查DOM是否已可用
+            domReady.timer = setInterval(isDOMReady, 13);
+        }
+    }
+
+    // 检查DOM是否可用
+    function isDOMReady(){
+
+        // 如果我们标记了已可用
+        if(domReady.done)
+            return false;
+
+        // 检查DOM是否可用
+        if(document &amp;&amp; document.getElementByTag &amp;&amp; document.getElementById &amp;&amp; document.body){
+
+            // 如果可用，停止检查
+            clearInterval(domReady.timer);
+            domReady.timer = null;
+
+            // 执行所有函数
+            for(var i=0; i&lt;domReady.ready.length; i++){
+                domReady.ready[i]();
+            }
+
+            domReady.ready = null;
+            domReady.done = true;
+        }
+    }
+</code></pre>
+
+<p>这种方法使用起来很简单，而且不堵塞浏览器的加载。jquery的<code>ready()</code>函数功能使用的就是这种思想，当然实现的更加优雅和完备</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[抛开兼容判断，可靠的DOM事件绑定]]></title>
+    <link href="http://wibud.github.io/blog/2013/04/03/pao-kai-jian-rong-pan-duan-,ke-kao-de-domshi-jian-bang-ding/"/>
+    <updated>2013-04-03T17:17:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/04/03/pao-kai-jian-rong-pan-duan-,ke-kao-de-domshi-jian-bang-ding</id>
+    <content type="html"><![CDATA[<p>最近看到了一个很有意思的添加和删除DOM事件的方法，这个方法十分可靠，只是使用绑定事件的传统方法：<code>element.onclick=function(){...}</code>，但是我们知道，传统的绑定方法有一个很大的弊端，那就是一个元素的一个事件只能绑定一个处理程序，而新的方法很好的解决了这个问题。</p>
+
+<p>让我们先回忆一下一般的我们如何跨浏览器的添加事件？</p>
+
+<p>我想大部分应该都是使用如下的方法：</p>
+
+<pre><code class="javascript">    var eventUtil = {
+        addEvent : function(type, ele, handler){
+
+            // 判断是否支持标准(W3C)事件绑定
+            if(ele.addEventListener){
+                ele.addEventListener(type, handler, false);
+            }
+            // 判断是否是IE事件绑定
+            else if(ele.attachEvent){
+                ele.attachEvent("on"+type, handler);
+            }
+            // 传统事件绑定
+            else{
+                ele["on"+type] = handler;
+            }
+        }
+    }
+</code></pre>
+
+<p>通过判断是否支持标准事件绑定还是IE事件绑定来决定使用哪种绑定事件的方式。</p>
+
+<p>而新的这个很有意思的事件绑定方式就不同了，下面来看看</p>
+
+<!-- more -->
+
+
+<pre><code class="javascript">    function addEvent(element, type, handler){
+
+        // 为每个事件处理函数赋予一个独立的ID
+        if(!handler.$$guid)
+            handler.$$guid = addEvent.guid++;
+
+        // 为元素建立一个事件类型的散列表
+        if(!element.events)
+            element.events = {};
+
+        // 为每对元素/事件建立一个事件处理函数的散列表
+        var handlers = element.events[type];
+        if(!handlers){
+            handlers = element.events[type] = {};
+
+            // 存储已有的事件处理函数(如果已经存在)
+            if(element["on"+type]){
+                handlers[0] = element["on"+type];
+            }
+        }
+
+        // 在散列表中存储该事件处理函数
+        handlers[handler.$$guid] = handler;
+
+        // 赋予一个全局事件处理函数来处理所有工作，使用传统绑定方法
+        element["on"+type] = handleEvent;
+    };
+
+    // 创建独立ID的计数器
+    addEvent.guid = 1;
+
+    function removeEvent(element, type, handler){
+        // 从列表中删除事件处理函数
+        if(element.events &amp;&amp; element.events[type]){
+            delete element.events[type][handler.$$guid];
+        }
+    };
+
+    function handlerEvent(event){
+        var returnValue = true;
+
+        // 获取事件对象
+        event = event || fixEvent(window.event);    // fixEvent() for IE
+
+        var handlers = this.events[type];
+
+        // 依次执行每个事件处理函数
+        for(var i in handlers){
+            this.$$handlerEvent = handlers[i];
+            if(this.$$handlerEvent(event) === false){
+                returnValue = false;
+            }
+        }
+
+        return returnValue;
+    }
+
+    // 增加一些IE事件对象缺乏的方法
+    function fixEvent(event){
+        // 增加W3C标准事件方法
+        event.preventDefult = fixEvent.preventDefault;
+        event.stopPropagation = fixEvent.stopPropagation;
+        return evnet;
+    };
+
+    fixEvent.preventDefault = function(){
+        this.returnValue = false;
+    };
+
+    fixEvent.stopPropagation = function(){
+        this.cancelBubble = true;
+    };'
+</code></pre>
+
+<p>不难看出使用传统的绑定方法可以在所有浏览器中工作，并且可以绑定多个事件处理函数。同时this关键字可以在所有绑定函数中使用，this指向的是当前绑定元素。瞬间逼格上涨，不过对比之前区分IE和标准的绑定方式，代码量的暴增可能也会让追求精简的童鞋抓狂吧。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JS实现私有成员]]></title>
+    <link href="http://wibud.github.io/blog/2013/03/30/jsshi-xian-si-you-cheng-yuan/"/>
+    <updated>2013-03-30T12:19:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/03/30/jsshi-xian-si-you-cheng-yuan</id>
+    <content type="html"><![CDATA[<p>我们知道JavaScript是面向对象的语言，但是它同其他比如Java不同，它没有私有成员的概念，所有的对象属性都是共有的。不过我们可以通过闭包来实现私有变量。</p>
+
+<h3>私有变量</h3>
+
+<p>定义构造函数：</p>
+
+<pre><code class="javascript">    function Myobject(){
+        // 私有变量
+        var privateValue = "I'm private value";
+
+        // 私有函数
+        function privateFun(){
+            return "I'm private function";
+        }
+
+        // 公有方法，可以访问私有成员的特权函数
+        this.publicFun = function(){
+            return privateValue + privateFun();
+        }
+    }
+</code></pre>
+
+<p>这样`object中的私有成员就对外不可见了，只能通过公共方法进行访问。</p>
+
+<h3>静态私有变量</h3>
+
+<p>之前的私有变量，每个使用构造函数创建的对象都有自己的私有成员，而静态私有变量是要所有的对象共享同一个私有变量，如下：</p>
+
+<pre><code class="javascript">    (function(){
+
+        // 静态私有变量
+        var staticPrivateValue = 1;
+
+        // 静态私有函数
+        function staticPrivateFun(){
+            return "I'm static private function";
+        }
+
+        // 构造函数
+        MyObject = function(){};
+
+        // 公有方法
+        MyObject.prototype.publicFun = function(){
+            staticPrivateValue++;
+            return staticPrivateFun();
+        }
+
+    })();
+</code></pre>
+
+<p>通过块级作用域来实现静态私有成员。其中<code>MyObjecct</code>构造函数定义时，没有声明就赋值初始化，导致<code>MyObjecct</code>变成了全局对象，这样在块级作用域外就可以访问到<code>MyObjecct</code>构造函数，而块级作用域中的静态私有变量只有定义的公有方法可以访问，同时对<code>MyObjecct</code>所有对象都是共享的。</p>
+
+<!-- more -->
+
+
+<h3>单例</h3>
+
+<p>单例即是只能创建一个实例对象，不需要构造函数，直接返回一个对象即可实现单例。</p>
+
+<pre><code class="javascript">    var singleObj = function(){
+
+        // 私有成员
+        var privateValue = 1;
+        function privateFun(){
+            return "Hello";
+        }
+
+        // 返回对象
+        return {
+            // 公用方法
+            publicFun : function(){
+                privateValue++;
+                return privateFun();
+            }
+        }
+    }();
+</code></pre>
+
+<p>通过使用一个返回对象的匿名函数来实现单例模式和私有成员。</p>
+]]></content>
+  </entry>
+  
+</feed>

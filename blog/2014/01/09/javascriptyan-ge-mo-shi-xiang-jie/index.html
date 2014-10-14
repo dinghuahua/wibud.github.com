@@ -1,0 +1,617 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>JavaScript严格模式详解 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="JavaScript严格模式详解 一、简介 严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性，目的是让JavaScript在更为严格的条件下运行， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">JavaScript严格模式详解</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>一、简介</h2>
+
+<p>严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性，目的是让JavaScript在更为严格的条件下运行，减少怪异行为和语言不合理的地方，提高编译运行性能（比如禁用with语句），增强了代码本身的安全性。</p>
+
+<p>在ES5之前的版本是不支持严格模式的，但是严格模式有很好的向后兼容性，因为低版本标准的引擎会忽略严格模式的声明，这个会在之后进行介绍。</p>
+
+<p>想了解各浏览器对于严格模式的支持情况戳这里<a href="http://kangax.github.io/es5-compat-table/">ECMAScript 5 compatibility table</a>，其中还统计了ES5新增特性的兼容情况。</p>
+
+<h2>二、声明</h2>
+
+<p>声明调用严格模式十分简单，也有些怪异，使用字符串字面量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之所以使用字符串字面量好处就是可以向后兼容，对于不支持严格模式的引擎，执行这条语句没有任何作用和影响。当然，如果我们使用了严格模式，那么就需要使用支持严格模式的引擎进行测试，使用低版本的引擎无法检测出严格模式下的错误。</p>
+
+<p>声明方式有如下两种：</p>
+
+<ul>
+<li>1、声明整个脚本</li>
+</ul>
+
+
+<p>将<code>"use strict;"</code>在脚本文件第一行，且必须是第一行，否则严格模式将无效。</p>
+
+<blockquote><p>在<code>"use strict;"</code>前不能有任何执行语句，即使是一个空的分号，都会使严格模式失效。</p></blockquote>
+
+<p><code>&lt;script&gt;</code>包含的脚本块和引入的外部文件对于严格模式来说都是相互独立的，也就是说，一个脚本块或脚本文件设置成严格模式执行，并不会影响到其他的脚本块和脚本文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;严格模式&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;正常模式&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2、声明单个函数体</li>
+</ul>
+
+
+<p>单个函数的声明和整个脚本的类似，需要将<code>"use strict;"</code>放在函数体的第一行。这样该函数就会以严格模式运行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!-- more -->
+
+
+<p>在大型多人合作的项目中使用严格模式，就需要多加注意了。因为，在开发中可能使用了多个脚本文件，而在部署时，会将多个文件合并成一个，如果有的脚本文件使用严格模式，而有的并没有使用，那么合并起来就可能导致意想不到的问题。比如，需要使用严格模式的地方失效了，而不需要使用严格模式的地方反而运行在严格模式下了。</p>
+
+<p>对于此类问题，有如下两种的解决方法：</p>
+
+<ul>
+<li>1、不将严格模式运行的文件和正常模式运行的文件合并起来。</li>
+</ul>
+
+
+<p>这应该是最简单的解决方法了，那么你在部署的时候就至少需要两个独立的脚本文件。但这样无疑会对你的文件管理增加负担。</p>
+
+<ul>
+<li>2、使用独立作用域（立即调用的函数表达式）</li>
+</ul>
+
+
+<p>将脚本文件内容包含再立即调用的函数表达式中，就好像模块一样。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'>        <span class="c1">// ...</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样合并成一个文件以后就不会相互影响了</p>
+
+<h2>三、严格模式的限制</h2>
+
+<p>以下列出了严格模式最主要的限制。</p>
+
+<ul>
+<li>1、变量必须使用var声明</li>
+</ul>
+
+
+<p>正常模式下，未声明的变量，默认是全局变量，而在严格模式下，必须对变量进行声明，否则会报错：“SCRIPT5042：严格模式下未定义变量”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">testValue</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// 报错</span>
+</span><span class='line'><span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>    <span class="c1">// 报错</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2、禁止写入只读属性</li>
+</ul>
+
+
+<p>正常模式下，对对象的只读属性进行赋值，不会出现错误，只是会默认失效，而在严格模式下，写入只读属性（包括使用get进行读取的属性）会报错：“SCRIPT5045：严格模式下不允许分配到只读属性”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testObj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperties</span><span class="p">({},</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">prop1</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">value</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">writable</span><span class="o">:</span> <span class="kc">false</span> <span class="c1">// by default</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">prop2</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">testObj</span><span class="p">.</span><span class="nx">prop1</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>     <span class="c1">// 报错</span>
+</span><span class='line'><span class="nx">testObj</span><span class="p">.</span><span class="nx">prop2</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>     <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>3、禁止为不可扩展的对象新增属性</li>
+</ul>
+
+
+<p>正常模式下，为不可扩展的对象添加属性不会报错，只会默认失效，而在严格模式下，会报错：“SCRIPT5046：无法为不可扩展的对象创建属性”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testObj</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">preventExtensions</span><span class="p">(</span><span class="nx">testObj</span><span class="p">);</span>
+</span><span class='line'><span class="nx">testObj</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Bob&quot;</span><span class="p">;</span>   <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>4、禁止删除变量、函数、参数和configurable为false的属性</li>
+</ul>
+
+
+<p>在严格模式下，只有configurable特性设置为true的对象属性才可以被删除，否则将报错：“SCRIPT1045：严格模式下不允许对 &lt;表达式> 调用 Delete”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testvar</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">testFunc</span><span class="p">()</span> <span class="p">{};</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">testvar</span><span class="p">;</span>     <span class="c1">// 报错</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">testFunc</span><span class="p">;</span>    <span class="c1">// 报错</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">testObj</span><span class="p">,</span> <span class="s2">&quot;testvar&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">value</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">configurable</span><span class="o">:</span> <span class="kc">false</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="k">delete</span> <span class="nx">testObj</span><span class="p">.</span><span class="nx">testvar</span><span class="p">;</span>     <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>5、禁止对象属性名重复</li>
+</ul>
+
+
+<p>正常模式下，如果对象的属性名重复，那么后一个属性的值会覆盖前一个同名属性的值，而在严格模式下，如果对象有同名属性，则会报错：“SCRIPT1046：严格模式下不允许一个属性有多个定义”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testObj</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">prop1</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">prop2</span><span class="o">:</span> <span class="mi">15</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">prop1</span><span class="o">:</span> <span class="mi">20</span>
+</span><span class='line'><span class="p">};</span>  <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>6、禁止函数参数名重复</li>
+</ul>
+
+
+<p>正常模式下，如果函数有多个重名参数，则可以使用argument[i]来读取相应的参数，而在严格模式下，如果函数存在参数重名，则会报错：“SCRIPT1038：严格模式下不允许正式参数名称重复”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">testFunc</span><span class="p">(</span><span class="nx">param1</span><span class="p">,</span> <span class="nx">param1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>  <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>7、保留关键字</li>
+</ul>
+
+
+<p>为了向将来Javascript的新版本过渡，严格模式新增了一些保留字：implements, interface, let, package, private, protected, public, static, yield。</p>
+
+<p>在严格模式下，使用这些这些保留字做变脸或函数名都会报错：“SCRIPT1050：无法使用标识符的未来保留字。 严格模式下将保留标识符名称。”</p>
+
+<blockquote><p>此外，ECMAscript第五版本身还规定了另一些保留字（class, enum, export, extends, import, super），以及各大浏览器自行增加的const保留字，也是不能作为变量名的。</p></blockquote>
+
+<ul>
+<li>8、禁止八进制数值</li>
+</ul>
+
+
+<p>正常模式下，整数数值的第一位如果是0，表示是八进制数，而在严格模式下，禁止对数值文本分配八进制值，或尝试对八进制值使用转义，否则报错：“SCRIPT1039：严格模式下不允许使用八进制数字参数和转义字符”。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testoctal</span> <span class="o">=</span> <span class="mi">010</span><span class="p">;</span>    <span class="c1">// 报错</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testescape</span> <span class="o">=</span> <span class="err">\</span><span class="mi">010</span><span class="p">;</span>  <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>9、禁止this指向全局对象</li>
+</ul>
+
+
+<p>在严格模式下，当 this 的值为 null 或 undefined 时，该值不会转换为全局对象，比如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">testFunc</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">testvar</span> <span class="o">=</span> <span class="nx">testFunc</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在正常的模式下，testvar的值为全局对象，但在严格模式下，该值为 undefined。</p>
+
+<p>再比如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'><span class="err">　　　　</span><span class="k">return</span> <span class="o">!</span><span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span><span class="p">}</span>
+</span><span class='line'><span class="err">　　</span><span class="c1">// 返回false，因为&quot;this&quot;指向全局对象，&quot;!this&quot;就是false</span>
+</span><span class='line'><span class="err">　　</span><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'><span class="err">　　　　</span><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　　　</span><span class="k">return</span> <span class="o">!</span><span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span><span class="p">}</span>
+</span><span class='line'><span class="err">　　</span><span class="c1">// 返回true，因为严格模式下，this的值为undefined，所以&quot;this&quot;为true。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因此，使用构造函数时，如果忘了加new，this不再指向全局对象，而是报错。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'><span class="err">　　　　</span><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　　　</span><span class="k">this</span><span class="p">.</span><span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span><span class="p">}</span>
+</span><span class='line'><span class="err">　　</span><span class="nx">f</span><span class="p">();</span><span class="c1">// 报错，this未定义</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>需要注意的是在IE10的PP2版（支持严格模式）中对于严格模式下得this存在bug，对于<code>(function(){ "use strict"; return !this })()</code>返回的是false。</p>
+
+<ul>
+<li><p>10、禁止“eval”用作标示符（变量、函数名、参数名等）</p></li>
+<li><p>11、eval具有独立作用域</p></li>
+</ul>
+
+
+<p>正常模式下，eval语句的作用域，取决于它处于全局作用域，还是处于函数作用域。严格模式下，eval语句本身就是一个作用域，不再能够生成全局变量了，它所生成的变量只能用于eval内部。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">indirectEval</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">;</span>
+</span><span class='line'><span class="nx">indirectEval</span><span class="p">(</span><span class="s2">&quot;var testvar = 10;&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">testVar</span><span class="p">);</span>    <span class="c1">// 报错，testVar未定义</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>12、禁止在语句或块内声明函数</li>
+</ul>
+
+
+<p>严格模式只允许在全局作用域或函数作用域的顶层声明函数。也就是说，不允许在非函数的代码块内声明函数，否则将会报错：“SCRIPT1047：在严格模式下，函数声明无法嵌套在语句或块中。 它们只能显示在顶级或直接显示在函数体中。”</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">];</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="nx">index</span> <span class="k">in</span> <span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">myFunc</span><span class="p">()</span> <span class="p">{};</span>   <span class="c1">// 报错</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>13、禁止“arguments”用作标示符（变量、函数名、参数名等）</p></li>
+<li><p>14、禁止对arguments对象赋值</p></li>
+<li><p>15、arguments不再影响和追踪参数值</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="err">　　</span>  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span>  <span class="nx">a</span><span class="o">++</span><span class="err">；</span>
+</span><span class='line'><span class="err">　　</span>  <span class="k">return</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'><span class="err">　　</span> <span class="p">}</span>
+</span><span class='line'><span class="err">　　</span><span class="nx">f</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// [2,1]</span>
+</span><span class='line'><span class="err">　　</span>
+</span><span class='line'><span class="err">　　</span><span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="err">　　</span>  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span>  <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">++</span><span class="err">；</span>
+</span><span class='line'><span class="err">　　</span>  <span class="k">return</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'><span class="err">　　</span> <span class="p">}</span>
+</span><span class='line'><span class="err">　　</span> <span class="nx">f</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>    <span class="c1">// [1,2]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在严格模式下，arguments对象只是一个本地副本。</p>
+
+<ul>
+<li>16、禁止使用arguments.callee</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">;</span> <span class="p">};</span>
+</span><span class='line'><span class="err">　　</span><span class="nx">f</span><span class="p">();</span> <span class="c1">// 报错</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>17、禁止使用with</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="err">　　</span><span class="kd">with</span> <span class="p">(</span><span class="nb">Math</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">x</span> <span class="o">=</span> <span class="nx">cos</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">y</span> <span class="o">=</span> <span class="nx">tan</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="JavaScript严格模式详解"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

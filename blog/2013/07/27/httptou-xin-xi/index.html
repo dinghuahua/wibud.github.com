@@ -1,0 +1,208 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>HTTP头信息 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="HTTP头信息 当我们在浏览器的地址栏中输入了URL之后发生了什么？ 浏览器分析我们输入的地址，解析所要使用的协议为HTTP协议
+浏览器向DNS请求解析URL的IP地址
+域名系统DNS解析出所请求的URL服务器的IP地址
+浏览器与服务器建立TCP连接
+浏览器发出HTTP请求 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2013/07/27/httptou-xin-xi/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">HTTP头信息</h1>
+	<div class="entry-content" itemprop="articleBody"><p>当我们在浏览器的地址栏中输入了URL之后发生了什么？</p>
+
+<ol>
+<li>浏览器分析我们输入的地址，解析所要使用的协议为HTTP协议</li>
+<li>浏览器向DNS请求解析URL的IP地址</li>
+<li>域名系统DNS解析出所请求的URL服务器的IP地址</li>
+<li>浏览器与服务器建立TCP连接</li>
+<li>浏览器发出HTTP请求</li>
+<li>服务器通过HTTP响应把文件返回给浏览器</li>
+<li>浏览器将文件进行解释，并将web页显示给用户</li>
+</ol>
+
+
+<h3>HTTP头信息</h3>
+
+<p>每个HTTP请求和响应都分为消息头和消息体两部分，而头部信息是一定会有的。</p>
+
+<p>默认情况下HTTP请求会发送下列的头信息：</p>
+
+<ul>
+<li>Accept：浏览器能够处理的内容类型&ndash;content-type</li>
+<li>Accept-Charset：浏览器能显示的字符集</li>
+<li>Accept-Encoding：浏览器能处理的压缩编码</li>
+<li>Accept-Language：浏览器当前设置的语言</li>
+<li>Connection：浏览器与服务器之间连接的类型</li>
+<li>Cookie：当前页面设置的任何Cookie</li>
+<li>Host：发出请求的页面所在的域</li>
+<li>Referer：发出请求的页面的URL</li>
+<li>User-Agent：浏览器的用户代理字符串（包括浏览器类型、操作系统信息等）</li>
+</ul>
+
+
+<p>看一个例子：</p>
+
+<pre><code>GET /index.html HTTP/1.1
+Accept:application/x-shockwave-flash
+Accept-Language:zh-cn
+Accept-Encoding:gzip
+Cookie:name=value
+User-Agent:Mozilla/4.0
+Host:localhost:8080
+Connection:Keep-Alive
+</code></pre>
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="HTTP头信息"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

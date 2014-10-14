@@ -1,0 +1,316 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>范式 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="范式 范式 构造数据库必须遵循一定的规则。在关系数据库中，这种规则就是范式。范式是符合某一种级别的关系模式的集合。关系数据库中的关系必须满足一定的要求，即满足不同的范式。目前关系数据库有六种范式：第一范式（1NF）、第二范式（2NF）、第三范式（3NF）、第四范式（4NF）、第五范式（5NF） &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2013/07/15/fan-shi/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">范式</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>范式</h2>
+
+<p>构造数据库必须遵循一定的规则。在关系数据库中，这种规则就是范式。范式是符合某一种级别的关系模式的集合。关系数据库中的关系必须满足一定的要求，即满足不同的范式。目前关系数据库有六种范式：第一范式（1NF）、第二范式（2NF）、第三范式（3NF）、第四范式（4NF）、第五范式（5NF）和第六范式（6NF）。满足最低要求的范式是第一范式（1NF）。在第一范式的基础上进一步满足更多要求的称为第二范式（2NF），其余范式以次类推。一般说来，数据库只需满足第三范式（3NF）就行了。下面我们举例介绍第一范式（1NF）、第二范式（2NF）和第三范式（3NF）。</p>
+
+<h3>第一范式（1NF）</h3>
+
+<p>在任何一个关系数据库中，第一范式（1NF）是对关系模式的基本要求，不满足第一范式（1NF）的数据库就不是关系数据库。所谓第一范式（1NF）是指</p>
+
+<ul>
+<li>数据库表的每一列都是不可分割的基本数据项，同一列中不能有多个值，即实体中的某个属性不能有多个值或者不能有重复的属性。如果出现重复的属性，就可能需要定义一个新的实体，新的实体由重复的属性构成，新实体与原实体之间为一对多关系。</li>
+<li>在第一范式（1NF）中表的每一行只包含一个实例的信息。</li>
+</ul>
+
+
+<blockquote><p>简而言之，第一范式就是无重复的列。属性唯一</p></blockquote>
+
+<h3>第二范式（2NF）</h3>
+
+<blockquote><p>第二范式（2NF）是在第一范式（1NF）的基础上建立起来的，即满足第二范式（2NF）必须先满足第一范式（1NF）。</p></blockquote>
+
+<p>第二范式（2NF）要求数据库表中的每个实例或行必须可以被惟一地区分。为实现区分通常需要为表加上一个列，以存储各个实例的惟一标识。这个惟一属性列被称为主关键字或主键、主码。第二范式（2NF）要求实体的属性完全依赖于主关键字。所谓完全依赖是指不能存在仅依赖主关键字一部分的属性，如果存在，那么这个属性和主关键字的这一部分应该分离出来形成一个新的实体，新实体与原实体之间是一对多的关系。为实现区分通常需要为表加上一个列，以存储各个实例的惟一标识。</p>
+
+<blockquote><p>简而言之，第二范式就是非主属性非部分依赖于主关键字。</p></blockquote>
+
+<p>感觉很绕有没有？</p>
+
+<p><strong>什么叫全部依赖，部分依赖？</strong>首先需要清楚一个概念，主关键字不是一个属性而是一组属性的集合，这个属性集合唯一的决定记录（实例）。现在再来看部分依赖，部分依赖就是主关键字这一组属性中的部分属性可以决定非主属性。</p>
+
+<h3>第三范式（3NF）</h3>
+
+<p>满足第三范式（3NF）必须先满足第二范式（2NF）。简而言之，第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息。例如，存在一个部门信息表，其中每个部门有部门编号（dept_id）、部门名称、部门简介等信息。那么在员工信息表中列出部门编号后就不能再将部门名称、部门简介等与部门有关的信息再加入员工信息表中。如果不存在部门信息表，则根据第三范式（3NF）也应该构建它，否则就会有大量的数据冗余。</p>
+
+<blockquote><p>简而言之，第三范式就是属性不依赖于其它非主属性。</p></blockquote>
+
+<!-- more -->
+
+
+<h2>范式的例子</h2>
+
+<p>所谓范式就是符合某一种级别的关系模式的集合。通过分解把属于低级范式的关系模式转换为几个属于高级范式的关系模式的集合。这一过程称为规范化。</p>
+
+<h3>第一范式（1NF）</h3>
+
+<p>数据库表中的字段都是单一属性的，不可再分。这个单一属性由基本类型构成，包括整型、实数、字符型、逻辑型、日期型等。</p>
+
+<h3>第二范式（2NF）</h3>
+
+<p>数据库表中不存在非关键字段对任一候选关键字段的部分函数依赖（部分函数依赖指的是存在组合关键字中的某些字段决定非关键字段的情况），也即所有非关键字段都完全依赖于任意一组候选关键字。</p>
+
+<p>假定选课关系表为SelectCourse(学号, 姓名, 年龄, 课程名称, 成绩, 学分)，关键字为组合关键字(学号, 课程名称)，因为存在如下决定关系：</p>
+
+<p>(学号, 课程名称) → (姓名, 年龄, 成绩, 学分)</p>
+
+<p>这个数据库表不满足第二范式，因为存在如下决定关系：</p>
+
+<p>(课程名称) → (学分)</p>
+
+<p>(学号) → (姓名, 年龄)</p>
+
+<p>即存在组合关键字中的字段决定非关键字的情况。</p>
+
+<p>由于不符合2NF，这个选课关系表会存在如下问题：</p>
+
+<p>　　(1) 数据冗余：</p>
+
+<p>　　同一门课程由n个学生选修，&#8221;学分&#8221;就重复n-1次；同一个学生选修了m门课程，姓名和年龄就重复了m-1次。</p>
+
+<p>　　(2) 更新异常：</p>
+
+<p>　　若调整了某门课程的学分，数据表中所有行的&#8221;学分&#8221;值都要更新，否则会出现同一门课程学分不同的情况。</p>
+
+<p>　　(3) 插入异常：</p>
+
+<p>　　假设要开设一门新的课程，暂时还没有人选修。这样，由于还没有&#8221;学号&#8221;关键字，课程名称和学分也无法记录入数据库。</p>
+
+<p>　　(4) 删除异常：</p>
+
+<p>　　假设一批学生已经完成课程的选修，这些选修记录就应该从数据库表中删除。但是，与此同时，课程名称和学分信息也被删除了。很显然，这也会导致插入异常。</p>
+
+<p>　　把选课关系表SelectCourse改为如下三个表：</p>
+
+<p>　　学生：Student(学号, 姓名, 年龄)；</p>
+
+<p>　　课程：Course(课程名称, 学分)；</p>
+
+<p>　　选课关系：SelectCourse(学号, 课程名称, 成绩)。</p>
+
+<p>　　这样的数据库表是符合第二范式的，消除了数据冗余、更新异常、插入异常和删除异常。</p>
+
+<p>　　另外，所有单关键字的数据库表都符合第二范式，因为不可能存在组合关键字。</p>
+
+<h3>第三范式（3NF）</h3>
+
+<p>在第二范式的基础上，数据表中如果不存在非关键字段对任一候选关键字段的传递函数依赖则符合第三范式。所谓传递函数依赖，指的是如果存在&#8221;A → B → C&#8221;的决定关系，则C传递函数依赖于A。因此，满足第三范式的数据库表应该不存在如下依赖关系：</p>
+
+<pre><code>关键字段 → 非关键字段x → 非关键字段y
+</code></pre>
+
+<p>　　假定学生关系表为Student(学号, 姓名, 年龄, 所在学院, 学院地点, 学院电话)，关键字为单一关键字&#8221;学号&#8221;，因为存在如下决定关系：</p>
+
+<p>　　(学号) → (姓名, 年龄, 所在学院, 学院地点, 学院电话)</p>
+
+<p>　　这个数据库是符合2NF的，但是不符合3NF，因为存在如下决定关系：</p>
+
+<p>　　(学号) → (所在学院) → (学院地点, 学院电话)</p>
+
+<p>　　即存在非关键字段&#8221;学院地点&#8221;、&#8221;学院电话&#8221;对关键字段&#8221;学号&#8221;的传递函数依赖。</p>
+
+<p>　　它也会存在数据冗余、更新异常、插入异常和删除异常的情况，读者可自行分析得知。</p>
+
+<p>　　把学生关系表分为如下两个表：</p>
+
+<p>　　学生：(学号, 姓名, 年龄, 所在学院)；</p>
+
+<p>　　学院：(学院, 地点, 电话)。</p>
+
+<p>　　这样的数据库表是符合第三范式的，消除了数据冗余、更新异常、插入异常和删除异常。</p>
+
+<h3>鲍依斯-科得范式（BCNF）</h3>
+
+<p>在第三范式的基础上，数据库表中如果不存在任何字段对任一候选关键字段的传递函数依赖则符合第三范式。</p>
+
+<p>　假设仓库管理关系表为StorehouseManage(仓库ID, 存储物品ID, 管理员ID, 数量)，且有一个管理员只在一个仓库工作；一个仓库可以存储多种物品。这个数据库表中存在如下决定关系：</p>
+
+<p>　　(仓库ID, 存储物品ID) →(管理员ID, 数量)</p>
+
+<p>　　(管理员ID, 存储物品ID) → (仓库ID, 数量)</p>
+
+<p>　　所以，(仓库ID, 存储物品ID)和(管理员ID, 存储物品ID)都是StorehouseManage的候选关键字，表中的唯一非关键字段为数量，它是符合第三范式的。但是，由于存在如下决定关系：</p>
+
+<p>　　(仓库ID) → (管理员ID)</p>
+
+<p>　　(管理员ID) → (仓库ID)</p>
+
+<p>　　即存在关键字段决定关键字段的情况，所以其不符合BCNF范式。它会出现如下异常情况：</p>
+
+<p>(1) 删除异常：</p>
+
+<p>　　当仓库被清空后，所有&#8221;存储物品ID&#8221;和&#8221;数量&#8221;信息被删除的同时，&#8221;仓库ID&#8221;和&#8221;管理员ID&#8221;信息也被删除了。</p>
+
+<p>　　(2) 插入异常：</p>
+
+<p>　　当仓库没有存储任何物品时，无法给仓库分配管理员。</p>
+
+<p>　　(3) 更新异常：</p>
+
+<p>　　如果仓库换了管理员，则表中所有行的管理员ID都要修改。</p>
+
+<p>　　把仓库管理关系表分解为二个关系表：</p>
+
+<p>　　仓库管理：StorehouseManage(仓库ID, 管理员ID)；</p>
+
+<p>　　仓库：Storehouse(仓库ID, 存储物品ID, 数量)。</p>
+
+<p>　　这样的数据库表是符合BCNF范式的，消除了删除异常、插入异常和更新异常。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="范式"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

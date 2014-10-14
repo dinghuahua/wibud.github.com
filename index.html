@@ -1,121 +1,1167 @@
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+<!DOCTYPE HTML>
 
-  
-  <meta name="description" content=" Blog Archives Recent Posts ">
-  
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="js, 前端 | Comments JavaScript严格模式详解 一、简介 严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性， &hellip;">
+	
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
-  <link rel="canonical" href="http://wibud.github.io">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
   
 
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">My Octopress Blog</a></h1>
-  
-    <h2>A blogging framework for hackers.</h2>
-  
-</hgroup>
 
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:wibud.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
 </nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+
+
+<time datetime="2014-01-09T15:17:48+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
 </div>
-<aside class="sidebar">
+		
+		
+          | <a href="/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/" itemprop="url">JavaScript严格模式详解</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>一、简介</h2>
+
+<p>严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性，目的是让JavaScript在更为严格的条件下运行，减少怪异行为和语言不合理的地方，提高编译运行性能（比如禁用with语句），增强了代码本身的安全性。</p>
+
+<p>在ES5之前的版本是不支持严格模式的，但是严格模式有很好的向后兼容性，因为低版本标准的引擎会忽略严格模式的声明，这个会在之后进行介绍。</p>
+
+<p>想了解各浏览器对于严格模式的支持情况戳这里<a href="http://kangax.github.io/es5-compat-table/">ECMAScript 5 compatibility table</a>，其中还统计了ES5新增特性的兼容情况。</p>
+
+<h2>二、声明</h2>
+
+<p>声明调用严格模式十分简单，也有些怪异，使用字符串字面量：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之所以使用字符串字面量好处就是可以向后兼容，对于不支持严格模式的引擎，执行这条语句没有任何作用和影响。当然，如果我们使用了严格模式，那么就需要使用支持严格模式的引擎进行测试，使用低版本的引擎无法检测出严格模式下的错误。</p>
+
+<p>声明方式有如下两种：</p>
+
+<ul>
+<li>1、声明整个脚本</li>
+</ul>
+
+
+<p>将<code>"use strict;"</code>在脚本文件第一行，且必须是第一行，否则严格模式将无效。</p>
+
+<blockquote><p>在<code>"use strict;"</code>前不能有任何执行语句，即使是一个空的分号，都会使严格模式失效。</p></blockquote>
+
+<p><code>&lt;script&gt;</code>包含的脚本块和引入的外部文件对于严格模式来说都是相互独立的，也就是说，一个脚本块或脚本文件设置成严格模式执行，并不会影响到其他的脚本块和脚本文件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;严格模式&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;正常模式&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>2、声明单个函数体</li>
+</ul>
+
+
+<p>单个函数的声明和整个脚本的类似，需要将<code>"use strict;"</code>放在函数体的第一行。这样该函数就会以严格模式运行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">f</span><span class="p">(){</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// ...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+		
+		<a href="/blog/2014/01/09/javascriptyan-ge-mo-shi-xiang-jie/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
   
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
+
+
+<time datetime="2013-12-20T17:52:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/gu-dao/'>鼓捣</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/12/20/octopresszhu-ti/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/12/20/octopresszhu-ti/" itemprop="url">Octopress主题</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>在Octopress默认主题的基础上进行了一些修改，把nav移到了顶端，同时在左侧增加了展示用户信息的sidebar。当浏览器宽度小于1152时，添加了响应式的布局。</p>
+
+<p>源码地址：<a href="https://github.com/wibud/Octopress-Theme-WinterBud">github</a></p>
+
+<p>如果对主题感兴趣，安装方式如下：</p>
+
+<pre><code>$ cd octopress
+$ git clone git://github.com/wibud/Octopress-Theme-WinterBud.git .themes/WinterBud
+$ rake install['WinterBud']
+$ rake generate
+</code></pre>
+
+<p><img src="/images/private/blog-screen.png" alt="" /></p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-05T11:12:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/08/05/gethe-postqing-qiu/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/08/05/gethe-postqing-qiu/" itemprop="url">GET和POST请求</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3>GET请求</h3>
+
+<p>GET是最常见的请求类型，最常用于向服务器查询信息。如果要发送信息给服务器的话，需要将查询字符串参数追加到URL的末尾。</p>
+
+<p>使用GET请求经常会发生一个错误，就是查询字符串参数的格式有问题。对于Javascript来说查询字符串中每个参数的名称和值都必须使用<code>encodeURIComponent()</code>进行编码，然后才能放到URL的末尾。</p>
+
+<h3>POST请求</h3>
+
+<p>POST通常用于向服务器发送应该被保存的数据。POST请求把数据作为请求的主体提交。POST请求的主体可以包含非常多的数据，而且格式不限。</p>
+
+<h3>GET和POST的区别</h3>
+
+<ul>
+<li>GET只要是用来查询数据；POST主要用来提交数据</li>
+<li>GET提交的数据是缀到URL末尾的，GET方式值发送HTTP消息头，没有消息体；POST的提交的数据是在消息体中</li>
+<li>GET提交的数据量小，因为URL长度有限制；POST能提交大量数据</li>
+<li>GET消耗的资源少；POST消耗的资源多</li>
+</ul>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-03T11:11:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/08/03/cookieyu-session/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/08/03/cookieyu-session/" itemprop="url">Cookie与session</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>Cookie</h2>
+
+<p>HTTP Cookie，通常直接叫做cookie，是在客户端用户存储会话信息的。cookie存储的信息是由服务器经HTTP头作为响应发给客户端的。例如服务器相应可能如下：</p>
+
+<pre><code>HTTP/1.1 200 OK
+Content-type:text/html
+Set-Cookie:name=value
+</code></pre>
+
+<p>其中的<code>Set-Cookie</code>包含着会话信息，浏览器会存储这些会话信息，之后会为每个请求添加Cookie HTTP头，将信息发送回服务器，如下</p>
+
+<pre><code>GET /index.html HTTP/1.1
+Cookie:name=value
+</code></pre>
+
+<p>因为Cookie是存储在浏览器上，浏览器资源有限，所以Cookie的个数和大小会有限制，不同的浏览器对Cookie 的限制不同，有的限制每个域只能有20个Cookie，且每个域Cookie总大小限制在4095B，有的浏览器可能会多些。</p>
+
+<h3>Cookie构成</h3>
+
+<ul>
+<li>名称：唯一确定cookie，名称是不区分大小写的</li>
+<li>值：存储在cookie中的字符串的值，必须被URL编码</li>
+<li>域：表示cookie对哪个域是有效的，所有向该有效域发送的请求都会加上这个cookie信息。如果没有设置，默认是设置cookie的域</li>
+<li>路径：对于制定域中的那个路径，应该向服务器发送cookie</li>
+<li>失效时间：表示cookie应该何时被删除。如果不设定，默认情况下，浏览器会话结束就会删除cookie（会话cookie）。如果设置了时间（大于当前时间），则浏览器关闭后cookie依然会保存在用户机器上（持久cookie）。这个值是GMT格式的日期。</li>
+<li>安全标志</li>
+</ul>
+
+
+<h3>Javascript操作cookie</h3>
+
+<p> <code>document.cookie</code>属性返回当前页面可用的（根据cookie的域、路径、失效时间和安全设置）所有cookie的字符串，一系列由分号分隔的名值对，如下：</p>
+
+<pre><code>name1=value1;name2=value2;name3=value3
+</code></pre>
+
+<p>所有名字和值都是URL编码的，所以必须使用<code>decodeURIComponent()</code>解码。</p>
+
+<p>设置值得时候，可以直接给<code>document.cookie</code>属性赋值，并不会覆盖cookie，除非设置的cookie名称已经存在。</p>
+
+<p>由于cookie操作比较麻烦，并不直观，下面来看一个简化cookie操作的功能对象：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">CookieUtil</span><span class="o">=</span><span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">cookieName</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="p">,</span>
+</span><span class='line'>                <span class="nx">cookieStart</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">indexof</span><span class="p">(</span><span class="nx">cookieName</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">cookieValue</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">cookieStart</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+</span><span class='line'>                <span class="kd">var</span> <span class="nx">cookieEnd</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">indexof</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span><span class="nx">cookieStart</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">if</span><span class="p">(</span><span class="nx">cookieEnd</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+</span><span class='line'>                    <span class="nx">cookieEnd</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="nx">cookieValue</span> <span class="o">=</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">cookieStart</span><span class="o">+</span><span class="nx">cookieName</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">cookieEnd</span><span class="p">));</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">cookieValue</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">expires</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">secure</span><span class="p">){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">cookieText</span> <span class="o">=</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">expires</span> <span class="k">instanceof</span> <span class="nb">Date</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">cookieText</span> <span class="o">+=</span> <span class="s2">&quot;; expires=&quot;</span> <span class="o">+</span> <span class="nx">expires</span><span class="p">.</span><span class="nx">toGMTString</span><span class="p">();</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">path</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">cookieText</span> <span class="o">+=</span> <span class="s2">&quot;; path=&quot;</span> <span class="o">+</span> <span class="nx">path</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">domain</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">cookieText</span> <span class="o">+=</span> <span class="s2">&quot;; domain=&quot;</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">secure</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">cookieText</span> <span class="o">+=</span> <span class="s2">&quot;; secure&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span> <span class="o">=</span> <span class="nx">cookieText</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+
+		
+		<a href="/blog/2013/08/03/cookieyu-session/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-02T11:09:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/08/02/ajaxxiang-guan-zong-jie/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/08/02/ajaxxiang-guan-zong-jie/" itemprop="url">Ajax相关总结</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3>创建XMLHttpRequest对象</h3>
+
+<p>创建XMLHttpRequest对象，跨浏览器兼容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">function</span> <span class="nx">createXHR</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 如果支持原生XHR对象</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">XMLHttpRequest</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span><span class="p">){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// 兼容IE6和之前版本</span>
+</span><span class='line'>        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">ActiveXObject</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// arguments.callee.activeXString存放版本信息</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">activeXString</span> <span class="o">!=</span> <span class="s2">&quot;string&quot;</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// 可能有3中不同版本的XHR对象</span>
+</span><span class='line'>                <span class="kd">var</span> <span class="nx">versions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MSXML2.XMLHttp.6.0&quot;</span><span class="p">,</span> <span class="s2">&quot;MSXML2.XMLHttp.3.0&quot;</span><span class="p">,</span> <span class="s2">&quot;MSXML2.XMLHttp&quot;</span><span class="p">],</span>
+</span><span class='line'>                    <span class="nx">i</span><span class="p">,</span><span class="nx">len</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nx">len</span><span class="o">=</span><span class="nx">versions</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// 如果不能创建相应版本的XHR对象，会抛异常，继续检查下一个版本</span>
+</span><span class='line'>                    <span class="k">try</span><span class="p">{</span>
+</span><span class='line'>                        <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="nx">versions</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>                        <span class="c1">// 如果可以创建该版本的XHR对象，则记录版本</span>
+</span><span class='line'>                        <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">activeXString</span> <span class="o">=</span> <span class="nx">versions</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>                        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                    <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">ex</span><span class="p">){</span>
+</span><span class='line'>                        <span class="c1">// 没有操作</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">activeXString</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;No XHR object available&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>响应处理</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="nx">createXHR</span><span class="p">()</span><span class="o">:</span>
+</span><span class='line'>    <span class="c1">// 必须在调用open()之前指定onreadystatechange事件处理才能确保跨浏览器的兼容性</span>
+</span><span class='line'>    <span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystartechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="c1">// 请求/响应过程完成</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="mi">4</span><span class="p">){</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">httpSuccess</span><span class="p">(</span><span class="nx">xhr</span><span class="p">)){</span>
+</span><span class='line'>                <span class="c1">// 响应的处理</span>
+</span><span class='line'>            <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>                <span class="c1">// 请求/响应不成功</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="s2">&quot;example.txt&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">httpSuccess</span><span class="p">(</span><span class="nx">xhr</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">try</span><span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 如果得不到服务器状态，且我们正在请求本地文件，认为成功</span>
+</span><span class='line'>            <span class="k">return</span> <span class="o">!</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">&amp;&amp;</span> <span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span><span class="o">==</span><span class="s2">&quot;file:&quot;</span> <span class="o">||</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// 所有200到300间的状态码表示成功（包括200，不包括300）</span>
+</span><span class='line'>                    <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">&gt;=</span> <span class="mi">200</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// 文档未修改也算成功</span>
+</span><span class='line'>                    <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">==</span> <span class="mi">304</span> <span class="o">||</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="c1">// Safari 在文档未修改时返回空状态</span>
+</span><span class='line'>                    <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">indexof</span><span class="p">(</span><span class="s2">&quot;Safari&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>                        <span class="k">typeof</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">ex</span><span class="p">){}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+
+		
+		<a href="/blog/2013/08/02/ajaxxiang-guan-zong-jie/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-27T11:08:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/27/httptou-xin-xi/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/27/httptou-xin-xi/" itemprop="url">HTTP头信息</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>当我们在浏览器的地址栏中输入了URL之后发生了什么？</p>
+
+<ol>
+<li>浏览器分析我们输入的地址，解析所要使用的协议为HTTP协议</li>
+<li>浏览器向DNS请求解析URL的IP地址</li>
+<li>域名系统DNS解析出所请求的URL服务器的IP地址</li>
+<li>浏览器与服务器建立TCP连接</li>
+<li>浏览器发出HTTP请求</li>
+<li>服务器通过HTTP响应把文件返回给浏览器</li>
+<li>浏览器将文件进行解释，并将web页显示给用户</li>
+</ol>
+
+
+<h3>HTTP头信息</h3>
+
+<p>每个HTTP请求和响应都分为消息头和消息体两部分，而头部信息是一定会有的。</p>
+
+<p>默认情况下HTTP请求会发送下列的头信息：</p>
+
+<ul>
+<li>Accept：浏览器能够处理的内容类型&ndash;content-type</li>
+<li>Accept-Charset：浏览器能显示的字符集</li>
+<li>Accept-Encoding：浏览器能处理的压缩编码</li>
+<li>Accept-Language：浏览器当前设置的语言</li>
+<li>Connection：浏览器与服务器之间连接的类型</li>
+<li>Cookie：当前页面设置的任何Cookie</li>
+<li>Host：发出请求的页面所在的域</li>
+<li>Referer：发出请求的页面的URL</li>
+<li>User-Agent：浏览器的用户代理字符串（包括浏览器类型、操作系统信息等）</li>
+</ul>
+
+
+<p>看一个例子：</p>
+
+<pre><code>GET /index.html HTTP/1.1
+Accept:application/x-shockwave-flash
+Accept-Language:zh-cn
+Accept-Encoding:gzip
+Cookie:name=value
+User-Agent:Mozilla/4.0
+Host:localhost:8080
+Connection:Keep-Alive
+</code></pre>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-15T11:04:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/shu-ju-ku/'>数据库</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/15/fan-shi/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/15/fan-shi/" itemprop="url">范式</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>范式</h2>
+
+<p>构造数据库必须遵循一定的规则。在关系数据库中，这种规则就是范式。范式是符合某一种级别的关系模式的集合。关系数据库中的关系必须满足一定的要求，即满足不同的范式。目前关系数据库有六种范式：第一范式（1NF）、第二范式（2NF）、第三范式（3NF）、第四范式（4NF）、第五范式（5NF）和第六范式（6NF）。满足最低要求的范式是第一范式（1NF）。在第一范式的基础上进一步满足更多要求的称为第二范式（2NF），其余范式以次类推。一般说来，数据库只需满足第三范式（3NF）就行了。下面我们举例介绍第一范式（1NF）、第二范式（2NF）和第三范式（3NF）。</p>
+
+<h3>第一范式（1NF）</h3>
+
+<p>在任何一个关系数据库中，第一范式（1NF）是对关系模式的基本要求，不满足第一范式（1NF）的数据库就不是关系数据库。所谓第一范式（1NF）是指</p>
+
+<ul>
+<li>数据库表的每一列都是不可分割的基本数据项，同一列中不能有多个值，即实体中的某个属性不能有多个值或者不能有重复的属性。如果出现重复的属性，就可能需要定义一个新的实体，新的实体由重复的属性构成，新实体与原实体之间为一对多关系。</li>
+<li>在第一范式（1NF）中表的每一行只包含一个实例的信息。</li>
+</ul>
+
+
+<blockquote><p>简而言之，第一范式就是无重复的列。属性唯一</p></blockquote>
+
+<h3>第二范式（2NF）</h3>
+
+<blockquote><p>第二范式（2NF）是在第一范式（1NF）的基础上建立起来的，即满足第二范式（2NF）必须先满足第一范式（1NF）。</p></blockquote>
+
+<p>第二范式（2NF）要求数据库表中的每个实例或行必须可以被惟一地区分。为实现区分通常需要为表加上一个列，以存储各个实例的惟一标识。这个惟一属性列被称为主关键字或主键、主码。第二范式（2NF）要求实体的属性完全依赖于主关键字。所谓完全依赖是指不能存在仅依赖主关键字一部分的属性，如果存在，那么这个属性和主关键字的这一部分应该分离出来形成一个新的实体，新实体与原实体之间是一对多的关系。为实现区分通常需要为表加上一个列，以存储各个实例的惟一标识。</p>
+
+<blockquote><p>简而言之，第二范式就是非主属性非部分依赖于主关键字。</p></blockquote>
+
+<p>感觉很绕有没有？</p>
+
+<p><strong>什么叫全部依赖，部分依赖？</strong>首先需要清楚一个概念，主关键字不是一个属性而是一组属性的集合，这个属性集合唯一的决定记录（实例）。现在再来看部分依赖，部分依赖就是主关键字这一组属性中的部分属性可以决定非主属性。</p>
+
+<h3>第三范式（3NF）</h3>
+
+<p>满足第三范式（3NF）必须先满足第二范式（2NF）。简而言之，第三范式（3NF）要求一个数据库表中不包含已在其它表中已包含的非主关键字信息。例如，存在一个部门信息表，其中每个部门有部门编号（dept_id）、部门名称、部门简介等信息。那么在员工信息表中列出部门编号后就不能再将部门名称、部门简介等与部门有关的信息再加入员工信息表中。如果不存在部门信息表，则根据第三范式（3NF）也应该构建它，否则就会有大量的数据冗余。</p>
+
+<blockquote><p>简而言之，第三范式就是属性不依赖于其它非主属性。</p></blockquote>
+
+
+		
+		<a href="/blog/2013/07/15/fan-shi/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-11T11:02:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/11/css-hack/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/11/css-hack/" itemprop="url">CSS Hack</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>CSS hack方式很多，下面介绍几种常见的</p>
+
+<h3>IE条件注释</h3>
+
+<p>针对IE引入样式文件：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">IE</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>针对特定版本的IE:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">IE</span> <span class="nt">6</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie6.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>针对某个版本范围的IE:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">gte</span> <span class="nt">IE</span> <span class="nt">6</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie6.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中“lte“表示“小于等于”，“lt”表示“小于”，“gte”表示“大于等于”，“gt”表示“大于”，“！”表示“不等于”</p>
+
+<h3>选择符前缀</h3>
+
+<p>原理是在CSS选择符前加上一些只有特定浏览器才能识别的值，例如<code>* html</code>只对IE6及更低版本有效</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>   <span class="o">&lt;</span><span class="nt">style</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="o">*</span> <span class="nt">html</span> <span class="nc">.test</span><span class="p">{</span><span class="k">width</span><span class="o">:</span><span class="m">100%</span><span class="p">;}</span>    <span class="c">/* 只对IE6及更低版本有效 */</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>样式属性前缀</h3>
+
+<p>在样式的属性名前加上只有特定浏览器下才能生效的前缀，例如”_“只在IE6下有效</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>   <span class="o">&lt;</span><span class="nt">style</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="nc">.test</span><span class="p">{</span><span class="k">width</span><span class="o">:</span><span class="m">80px</span><span class="p">;</span> <span class="n">_width</span><span class="o">:</span><span class="m">70px</span><span class="p">;}</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>子选择器hack</h3>
+
+<p>使用子选择器hack，是使用了IE老版本不理解而现代浏览器能够理解的选择器，这样在IE老版本就会忽略。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">html</span><span class="o">&gt;</span><span class="nt">body</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(bg.png)</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个规则对于IE6以及之前老版本是隐藏的。</p>
+
+<h3>明智的使用hack</h3>
+
+<p>使用hack的时候需要谨慎，有时hack会相当复杂，这会使你的CSS文件很长而且很复杂，十分不宜阅读。而且很多hack会有向后兼容的问题，这些hack是针对浏览器是否识别特殊的前缀和属性来实现的，但不能保证之后的浏览器对这些前缀和属性的识别能力。如果确实要使用hack，最好将hack放到统一的样式表中，同时一定要写好注释，便于管理。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T10:28:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/08/floatxiao-xi-jie/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/08/floatxiao-xi-jie/" itemprop="url">Float小细节</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：<code>.fl{float:left;display:inline}</code>,<code>.fr{float:right;display:inline}</code></p>
+
+<h3>为什么要在设置了<code>float:left</code>和<code>float:right</code>之外，还要设置<code>display:inline</code>呢？</h3>
+
+<p>其实这是为了解决IE6的双外边距的bug。在IE6中，如果对元素设置了浮动，同时又设置了margin-left或者margin-right的话，margin的值会加倍。解决这个问题的办法就是这是<code>display:inline</code>。所以在设计通用原子类的时候将<code>display:inline</code>引入.fl和.fr类中。</p>
+
+<h3>这样不会影响块级元素吗？</h3>
+
+<p>如果我们对块级元素赋予.fl或.fr类，其中的<code>display:inline</code>不会将块级元素变成行内元素了吗？其实这一点不用担心，<code>float:left</code>，<code>float:right</code>还有<code>position:absolute</code>，会让元素以<code>display:inline-block</code>的方式显示，就算我们设置了<code>display:inline</code>或者<code>display:block</code>，也仍然无效。</p>
+
+<h3>display:inline-block</h3>
+
+<p>disploy的值除了inline和block之外，还有一个十分有用的值：inline-block（IE6,IE7不支持，但是可以实现相同效果）。</p>
+
+<p><code>display:inline-block</code>，从写法上就不难看出，它可肯定是行内元素特性inline和块级元素特性block的结合体，它具有块级元素的特点，可以设置长宽，margin和padding；又具有行内元素的特点，它不独占一行。</p>
+
+<p>那在IE6和IE7下如何实现呢，我们知道IE为盒模型设计了一个专门的属性hasLayout，如果触发行内元素的hasLayout，就能让行内元素拥有块级元素的特性，达到<code>display:inline-block</code>的效果。幸运的是设置<code>display:inline-block</code>，就可以触发hasLayout。当然在IE6和IE7下还是有局限性，我们只能对行内元素实现<code>display:inline-block</code>的效果，对于块级元素就不行了。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-31T22:06:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/" itemprop="url">监听DOM加载完毕</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下：</p>
+
+<ul>
+<li>解析HTML</li>
+<li>下载外部脚本样式</li>
+<li>脚本解析执行</li>
+<li>DOM完全构建完成</li>
+<li>图片等外部资源加载</li>
+<li>网页加载完毕</li>
+</ul>
+
+
+<p>那如何判断DOM是否加载完毕呢？使用body的onload事件进行监听？当然可以，但是body的onload是在所有内容，包括图片、flash啊等等内容全部加载后才触发，导致用户需要等待这部分内容加载后才能看到页面的动态内容，才能同页面进行交互，对于追(ti)求(gao)极(bi)致(ge)的程序猿来说，显然是不能接受的了，其实，只要检查如下3点足矣</p>
+
+<ul>
+<li>document</li>
+<li>document.getElementByTagName和document.getElementById</li>
+<li>document.body</li>
+</ul>
+
+
+<p>检查这三点就足够了。接着我们就可以写一个监听DOM何时加载完毕的函数了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">domReady</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 假如DOM已经加载，马上执行函数</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">f</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">// 如果已经添加了一个函数</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">){</span>
+</span><span class='line'>        <span class="c1">// 把它加入待执行函数清单</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 初始化待执行函数的数组</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="p">[</span><span class="nx">f</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 尽可能块的检查DOM是否已可用</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="nx">isDOMReady</span><span class="p">,</span> <span class="mi">13</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 检查DOM是否可用</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">isDOMReady</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 如果我们标记了已可用</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 检查DOM是否可用</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nb">document</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementByTag</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 如果可用，停止检查</span>
+</span><span class='line'>        <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 执行所有函数</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">[</span><span class="nx">i</span><span class="p">]();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方法使用起来很简单，而且不堵塞浏览器的加载。jquery的<code>ready()</code>函数功能使用的就是这种思想，当然实现的更加优雅和完备</p>
+
+		
+		
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
     
-  </ul>
-</section>
+    
+        <a href="2" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
 
 
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Your Name -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
 </footer>
-  
+		</div>
+	</div>
+	
 
 
 
 
 
 
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
+<!-- 
+ -->
 
 
 </body>

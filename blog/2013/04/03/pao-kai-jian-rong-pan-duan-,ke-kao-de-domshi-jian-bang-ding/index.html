@@ -1,0 +1,361 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>抛开兼容判断，可靠的DOM事件绑定 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="抛开兼容判断，可靠的DOM事件绑定 最近看到了一个很有意思的添加和删除DOM事件的方法，这个方法十分可靠，只是使用绑定事件的传统方法：element.onclick=function(){...}，但是我们知道，传统的绑定方法有一个很大的弊端，那就是一个元素的一个事件只能绑定一个处理程序， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2013/04/03/pao-kai-jian-rong-pan-duan-,ke-kao-de-domshi-jian-bang-ding/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='http://www.gravatar.com/avatar/" + MD5("wi_bud@163.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">抛开兼容判断，可靠的DOM事件绑定</h1>
+	<div class="entry-content" itemprop="articleBody"><p>最近看到了一个很有意思的添加和删除DOM事件的方法，这个方法十分可靠，只是使用绑定事件的传统方法：<code>element.onclick=function(){...}</code>，但是我们知道，传统的绑定方法有一个很大的弊端，那就是一个元素的一个事件只能绑定一个处理程序，而新的方法很好的解决了这个问题。</p>
+
+<p>让我们先回忆一下一般的我们如何跨浏览器的添加事件？</p>
+
+<p>我想大部分应该都是使用如下的方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">eventUtil</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">addEvent</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">ele</span><span class="p">,</span> <span class="nx">handler</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 判断是否支持标准(W3C)事件绑定</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nx">ele</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">ele</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// 判断是否是IE事件绑定</span>
+</span><span class='line'>        <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">ele</span><span class="p">.</span><span class="nx">attachEvent</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">ele</span><span class="p">.</span><span class="nx">attachEvent</span><span class="p">(</span><span class="s2">&quot;on&quot;</span><span class="o">+</span><span class="nx">type</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="c1">// 传统事件绑定</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">{</span>
+</span><span class='line'>            <span class="nx">ele</span><span class="p">[</span><span class="s2">&quot;on&quot;</span><span class="o">+</span><span class="nx">type</span><span class="p">]</span> <span class="o">=</span> <span class="nx">handler</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通过判断是否支持标准事件绑定还是IE事件绑定来决定使用哪种绑定事件的方式。</p>
+
+<p>而新的这个很有意思的事件绑定方式就不同了，下面来看看</p>
+
+<!-- more -->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">addEvent</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">handler</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 为每个事件处理函数赋予一个独立的ID</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">handler</span><span class="p">.</span><span class="nx">$$guid</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">handler</span><span class="p">.</span><span class="nx">$$guid</span> <span class="o">=</span> <span class="nx">addEvent</span><span class="p">.</span><span class="nx">guid</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 为元素建立一个事件类型的散列表</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">element</span><span class="p">.</span><span class="nx">events</span><span class="p">)</span>
+</span><span class='line'>        <span class="nx">element</span><span class="p">.</span><span class="nx">events</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 为每对元素/事件建立一个事件处理函数的散列表</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">handlers</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">events</span><span class="p">[</span><span class="nx">type</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">handlers</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">handlers</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">events</span><span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 存储已有的事件处理函数(如果已经存在)</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="nx">element</span><span class="p">[</span><span class="s2">&quot;on&quot;</span><span class="o">+</span><span class="nx">type</span><span class="p">]){</span>
+</span><span class='line'>            <span class="nx">handlers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nx">element</span><span class="p">[</span><span class="s2">&quot;on&quot;</span><span class="o">+</span><span class="nx">type</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 在散列表中存储该事件处理函数</span>
+</span><span class='line'>    <span class="nx">handlers</span><span class="p">[</span><span class="nx">handler</span><span class="p">.</span><span class="nx">$$guid</span><span class="p">]</span> <span class="o">=</span> <span class="nx">handler</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 赋予一个全局事件处理函数来处理所有工作，使用传统绑定方法</span>
+</span><span class='line'>    <span class="nx">element</span><span class="p">[</span><span class="s2">&quot;on&quot;</span><span class="o">+</span><span class="nx">type</span><span class="p">]</span> <span class="o">=</span> <span class="nx">handleEvent</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 创建独立ID的计数器</span>
+</span><span class='line'><span class="nx">addEvent</span><span class="p">.</span><span class="nx">guid</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">removeEvent</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">handler</span><span class="p">){</span>
+</span><span class='line'>    <span class="c1">// 从列表中删除事件处理函数</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">events</span> <span class="o">&amp;&amp;</span> <span class="nx">element</span><span class="p">.</span><span class="nx">events</span><span class="p">[</span><span class="nx">type</span><span class="p">]){</span>
+</span><span class='line'>        <span class="k">delete</span> <span class="nx">element</span><span class="p">.</span><span class="nx">events</span><span class="p">[</span><span class="nx">type</span><span class="p">][</span><span class="nx">handler</span><span class="p">.</span><span class="nx">$$guid</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">handlerEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 获取事件对象</span>
+</span><span class='line'>    <span class="nx">event</span> <span class="o">=</span> <span class="nx">event</span> <span class="o">||</span> <span class="nx">fixEvent</span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">event</span><span class="p">);</span>    <span class="c1">// fixEvent() for IE</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">handlers</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">events</span><span class="p">[</span><span class="nx">type</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 依次执行每个事件处理函数</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">handlers</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">$$handlerEvent</span> <span class="o">=</span> <span class="nx">handlers</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$$handlerEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">===</span> <span class="kc">false</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">returnValue</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 增加一些IE事件对象缺乏的方法</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">fixEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">){</span>
+</span><span class='line'>    <span class="c1">// 增加W3C标准事件方法</span>
+</span><span class='line'>    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefult</span> <span class="o">=</span> <span class="nx">fixEvent</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">event</span><span class="p">.</span><span class="nx">stopPropagation</span> <span class="o">=</span> <span class="nx">fixEvent</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">evnet</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">fixEvent</span><span class="p">.</span><span class="nx">preventDefault</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">fixEvent</span><span class="p">.</span><span class="nx">stopPropagation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">cancelBubble</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span><span class="err">&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不难看出使用传统的绑定方法可以在所有浏览器中工作，并且可以绑定多个事件处理函数。同时this关键字可以在所有绑定函数中使用，this指向的是当前绑定元素。瞬间逼格上涨，不过对比之前区分IE和标准的绑定方式，代码量的暴增可能也会让追求精简的童鞋抓狂吧。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="抛开兼容判断，可靠的DOM事件绑定"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

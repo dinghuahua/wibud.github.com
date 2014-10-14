@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 鼓捣 | Winter Bud]]></title>
+  <link href="http://wibud.github.io/blog/categories/gu-dao/atom.xml" rel="self"/>
+  <link href="http://wibud.github.io/"/>
+  <updated>2014-10-15T00:38:46+08:00</updated>
+  <id>http://wibud.github.io/</id>
+  <author>
+    <name><![CDATA[wibud]]></name>
+    <email><![CDATA[wi_bud@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress主题]]></title>
+    <link href="http://wibud.github.io/blog/2013/12/20/octopresszhu-ti/"/>
+    <updated>2013-12-20T17:52:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/12/20/octopresszhu-ti</id>
+    <content type="html"><![CDATA[<p>在Octopress默认主题的基础上进行了一些修改，把nav移到了顶端，同时在左侧增加了展示用户信息的sidebar。当浏览器宽度小于1152时，添加了响应式的布局。</p>
+
+<p>源码地址：<a href="https://github.com/wibud/Octopress-Theme-WinterBud">github</a></p>
+
+<p>如果对主题感兴趣，安装方式如下：</p>
+
+<pre><code>$ cd octopress
+$ git clone git://github.com/wibud/Octopress-Theme-WinterBud.git .themes/WinterBud
+$ rake install['WinterBud']
+$ rake generate
+</code></pre>
+
+<p><img src="/images/private/blog-screen.png" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[搭建octopress遇到的坑]]></title>
+    <link href="http://wibud.github.io/blog/2013/02/23/da-jian-octopressyu-dao-de-keng/"/>
+    <updated>2013-02-23T20:16:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/02/23/da-jian-octopressyu-dao-de-keng</id>
+    <content type="html"><![CDATA[<p>如何使用octopress搭建博客这里就不赘述了，最权威的还是去看<a href="http://octopress.org/docs/">官网教程</a>好了，十分的详尽。国人翻译的教程也海了去了，用某度一搜就好了。</p>
+
+<p>尝鲜使用octopress搭建博客，过程一波三折，遇到了一个十分奇葩的问题，纠结了很久。</p>
+
+<p>在我的ubuntu系统上将环境搭建好以后,执行<code>rake generate</code>时，出现了如下的问题。</p>
+
+<pre><code>## Generating Site with Jekyll
+overwrite source/stylesheets/screen.css
+Configuration from /Users/foobar/Development/project/foobar.github.com/_config.yml
+Building site: source -&gt; public
+Liquid Exception: undefined method `gsub' for nil:NilClass in page
+/Users/foobar/Development/project/foobar.github.com/plugins/octopress_filters.rb:123:in `shorthand_url'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/context.rb:58:in `invoke'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/variable.rb:43:in `block in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/variable.rb:38:in `each'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/variable.rb:38:in `inject'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/variable.rb:38:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:94:in `block in render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `collect'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/tags/if.rb:39:in `block (2 levels) in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/tags/if.rb:37:in `each'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/tags/if.rb:37:in `block in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/context.rb:91:in `stack'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/tags/if.rb:36:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:94:in `block in render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `collect'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:82:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/template.rb:124:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/tags/include.rb:26:in `block (2 levels) in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/context.rb:91:in `stack'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/tags/include.rb:25:in `block in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/tags/include.rb:20:in `chdir'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/tags/include.rb:20:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:94:in `block in render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `collect'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:92:in `render_all'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/block.rb:82:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/template.rb:124:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/liquid-2.3.0/lib/liquid/template.rb:132:in `render!'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/convertible.rb:101:in `do_layout'
+/Users/foobar/Development/project/foobar.github.com/plugins/post_filters.rb:167:in `do_layout'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/page.rb:100:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/site.rb:204:in `block in render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/site.rb:203:in `each'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/site.rb:203:in `render'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/lib/jekyll/site.rb:41:in `process'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/gems/jekyll-0.12.0/bin/jekyll:264:in `&lt;top (required)&gt;'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/bin/jekyll:19:in `load'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/bin/jekyll:19:in `&lt;main&gt;'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/bin/ruby_noexec_wrapper:14:in `eval'
+/Users/foobar/.rvm/gems/ruby-1.9.3-p392/bin/ruby_noexec_wrapper:14:in `&lt;main&gt;'
+Build Failed
+</code></pre>
+
+<p>查了半天原因，才发现只是因为<code>_config.yml</code>文件中的<code>url:</code>没有赋值，很奇怪，在<code>rake setup_github_pages</code>时有提示你输入Repo地址，但是却没有写入这个配置文件中。之后自己写上就安了~~</p>
+]]></content>
+  </entry>
+  
+</feed>

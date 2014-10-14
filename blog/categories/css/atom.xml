@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: css | Winter Bud]]></title>
+  <link href="http://wibud.github.io/blog/categories/css/atom.xml" rel="self"/>
+  <link href="http://wibud.github.io/"/>
+  <updated>2014-10-15T00:38:46+08:00</updated>
+  <id>http://wibud.github.io/</id>
+  <author>
+    <name><![CDATA[wibud]]></name>
+    <email><![CDATA[wi_bud@163.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[CSS hack]]></title>
+    <link href="http://wibud.github.io/blog/2013/07/11/css-hack/"/>
+    <updated>2013-07-11T11:02:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/07/11/css-hack</id>
+    <content type="html"><![CDATA[<p>CSS hack方式很多，下面介绍几种常见的</p>
+
+<h3>IE条件注释</h3>
+
+<p>针对IE引入样式文件：</p>
+
+<pre><code class="css">    &lt;!--[if IE]&gt;
+        &lt;link type="text/CSS" href="ie.css" rel="stylesheet" /&gt;
+    &lt;![end if]--&gt;
+</code></pre>
+
+<p>针对特定版本的IE:</p>
+
+<pre><code class="css">    &lt;!--[if IE 6]&gt;
+        &lt;link type="text/CSS" href="ie6.css" rel="stylesheet" /&gt;
+    &lt;![end if]--&gt;
+</code></pre>
+
+<p>针对某个版本范围的IE:</p>
+
+<pre><code class="css">    &lt;!--[if gte IE 6]&gt;
+        &lt;link type="text/CSS" href="ie6.css" rel="stylesheet" /&gt;
+    &lt;![end if]--&gt;
+</code></pre>
+
+<p>其中“lte“表示“小于等于”，“lt”表示“小于”，“gte”表示“大于等于”，“gt”表示“大于”，“！”表示“不等于”</p>
+
+<h3>选择符前缀</h3>
+
+<p>原理是在CSS选择符前加上一些只有特定浏览器才能识别的值，例如<code>* html</code>只对IE6及更低版本有效</p>
+
+<pre><code class="css">   &lt;style type="text/CSS"&gt;
+        * html .test{width:100%;}    /* 只对IE6及更低版本有效 */
+   &lt;/style&gt;
+</code></pre>
+
+<h3>样式属性前缀</h3>
+
+<p>在样式的属性名前加上只有特定浏览器下才能生效的前缀，例如”_“只在IE6下有效</p>
+
+<pre><code class="css">   &lt;style type="text/CSS"&gt;
+        .test{width:80px; _width:70px;}
+   &lt;/style&gt;
+</code></pre>
+
+<h3>子选择器hack</h3>
+
+<p>使用子选择器hack，是使用了IE老版本不理解而现代浏览器能够理解的选择器，这样在IE老版本就会忽略。</p>
+
+<pre><code class="css">  html&gt;body{
+    background-image: url(bg.png);
+  }
+</code></pre>
+
+<p>这个规则对于IE6以及之前老版本是隐藏的。</p>
+
+<h3>明智的使用hack</h3>
+
+<p>使用hack的时候需要谨慎，有时hack会相当复杂，这会使你的CSS文件很长而且很复杂，十分不宜阅读。而且很多hack会有向后兼容的问题，这些hack是针对浏览器是否识别特殊的前缀和属性来实现的，但不能保证之后的浏览器对这些前缀和属性的识别能力。如果确实要使用hack，最好将hack放到统一的样式表中，同时一定要写好注释，便于管理。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[float小细节]]></title>
+    <link href="http://wibud.github.io/blog/2013/07/08/floatxiao-xi-jie/"/>
+    <updated>2013-07-08T10:28:00+08:00</updated>
+    <id>http://wibud.github.io/blog/2013/07/08/floatxiao-xi-jie</id>
+    <content type="html"><![CDATA[<p>之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：<code>.fl{float:left;display:inline}</code>,<code>.fr{float:right;display:inline}</code></p>
+
+<h3>为什么要在设置了<code>float:left</code>和<code>float:right</code>之外，还要设置<code>display:inline</code>呢？</h3>
+
+<p>其实这是为了解决IE6的双外边距的bug。在IE6中，如果对元素设置了浮动，同时又设置了margin-left或者margin-right的话，margin的值会加倍。解决这个问题的办法就是这是<code>display:inline</code>。所以在设计通用原子类的时候将<code>display:inline</code>引入.fl和.fr类中。</p>
+
+<h3>这样不会影响块级元素吗？</h3>
+
+<p>如果我们对块级元素赋予.fl或.fr类，其中的<code>display:inline</code>不会将块级元素变成行内元素了吗？其实这一点不用担心，<code>float:left</code>，<code>float:right</code>还有<code>position:absolute</code>，会让元素以<code>display:inline-block</code>的方式显示，就算我们设置了<code>display:inline</code>或者<code>display:block</code>，也仍然无效。</p>
+
+<h3>display:inline-block</h3>
+
+<p>disploy的值除了inline和block之外，还有一个十分有用的值：inline-block（IE6,IE7不支持，但是可以实现相同效果）。</p>
+
+<p><code>display:inline-block</code>，从写法上就不难看出，它可肯定是行内元素特性inline和块级元素特性block的结合体，它具有块级元素的特点，可以设置长宽，margin和padding；又具有行内元素的特点，它不独占一行。</p>
+
+<p>那在IE6和IE7下如何实现呢，我们知道IE为盒模型设计了一个专门的属性hasLayout，如果触发行内元素的hasLayout，就能让行内元素拥有块级元素的特性，达到<code>display:inline-block</code>的效果。幸运的是设置<code>display:inline-block</code>，就可以触发hasLayout。当然在IE6和IE7下还是有局限性，我们只能对行内元素实现<code>display:inline-block</code>的效果，对于块级元素就不行了。</p>
+]]></content>
+  </entry>
+  
+</feed>
