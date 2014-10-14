@@ -2,12 +2,12 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://wibud.github.io
+title: Winter Bud
+subtitle: stay hungry stay foolish.
+author: wibud
 simple_search: https://www.google.com/search
-description:
+description: UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: wi_bud@163.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -42,8 +42,8 @@ rdiscount:
 highlighter: pygments # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
-paginate_path: "posts/:num"  # Directory base for pagination URLs eg. /posts/2/
-recent_posts: 5       # Posts in the sidebar Recent Posts section
+paginate_path: "_posts/:num"  # Directory base for pagination URLs eg. /posts/2/
+recent_posts: 10       # Posts in the sidebar Recent Posts section
 excerpt_link: "Read on &rarr;"  # "Continue reading" link text at the bottom of excerpted articles
 excerpt_separator: "<!--more-->"
 
@@ -64,14 +64,14 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/delicious.
 # ----------------------- #
 
 # Github repositories
-github_user:
-github_repo_count: 0
+github_user: wibud
+github_repo_count: 5
 github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
 twitter_user:
-twitter_tweet_button: true
+twitter_tweet_button: false
 
 # Google +1
 google_plus_one: false
@@ -99,3 +99,10 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+# weibo
+weibo: 2435540027
+
+# duoshuo
+duoshuo_comments: true
+duoshuo_short_name: wibud

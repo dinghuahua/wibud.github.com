@@ -1,0 +1,73 @@
+---
+layout: post
+title: "CSS hack"
+date: 2013-07-11 11:02
+comments: true
+categories: css 前端
+---
+
+CSS hack方式很多，下面介绍几种常见的
+
+### IE条件注释
+
+针对IE引入样式文件：
+
+```css
+    <!--[if IE]>
+        <link type="text/CSS" href="ie.css" rel="stylesheet" />
+    <![end if]-->
+```
+
+针对特定版本的IE:
+
+```css
+    <!--[if IE 6]>
+        <link type="text/CSS" href="ie6.css" rel="stylesheet" />
+    <![end if]-->
+```
+
+针对某个版本范围的IE:
+
+```css
+    <!--[if gte IE 6]>
+        <link type="text/CSS" href="ie6.css" rel="stylesheet" />
+    <![end if]-->
+```
+
+其中“lte“表示“小于等于”，“lt”表示“小于”，“gte”表示“大于等于”，“gt”表示“大于”，“！”表示“不等于”
+
+### 选择符前缀
+
+原理是在CSS选择符前加上一些只有特定浏览器才能识别的值，例如`* html`只对IE6及更低版本有效
+
+```css
+   <style type="text/CSS">
+        * html .test{width:100%;}    /* 只对IE6及更低版本有效 */
+   </style>
+```
+
+### 样式属性前缀
+
+在样式的属性名前加上只有特定浏览器下才能生效的前缀，例如”_“只在IE6下有效
+
+```css
+   <style type="text/CSS">
+        .test{width:80px; _width:70px;}
+   </style>
+```
+
+### 子选择器hack
+
+使用子选择器hack，是使用了IE老版本不理解而现代浏览器能够理解的选择器，这样在IE老版本就会忽略。
+
+```css
+  html>body{
+    background-image: url(bg.png);
+  }
+```
+
+这个规则对于IE6以及之前老版本是隐藏的。
+
+### 明智的使用hack
+
+使用hack的时候需要谨慎，有时hack会相当复杂，这会使你的CSS文件很长而且很复杂，十分不宜阅读。而且很多hack会有向后兼容的问题，这些hack是针对浏览器是否识别特殊的前缀和属性来实现的，但不能保证之后的浏览器对这些前缀和属性的识别能力。如果确实要使用hack，最好将hack放到统一的样式表中，同时一定要写好注释，便于管理。
