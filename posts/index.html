@@ -9,7 +9,7 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="All Posts JavaScript严格模式详解 一、简介 严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性， &hellip;">
+	<meta name="description" content="All Posts [译]GPU Accelerated Compositing in Chrome（GPU合成加速） 原文地址：http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in- &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,6 +109,159 @@
 
   <div class="article-list">
     <div class="container">
+      
+      
+      <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+          <article>
+  <h2><a href="/blog/2014/11/03/yi-gpu-accelerated-compositing-in-chrome(gpuhe-cheng-jia-su-)/">[译]GPU Accelerated Compositing in Chrome（GPU合成加速）</a></h2>
+  
+  <p>
+    <blockquote><p>原文地址：<a href="http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome">http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome</a></p>
+
+<p>作者：Tom Wiltzius, Vangelis Kokkevis &amp; the Chrome Graphics team</p></blockquote>
+
+
+
+
+<h3>摘要</h3>
+
+
+
+
+<p>本文讲述了chrome中硬件加速合成（compositing[1]）的实现</p>
+
+
+
+
+<h3>简介：为什么使用硬件进行合成（compositing）</h3>
+
+
+
+
+<p>传统方式下，浏览器依赖CPU来渲染页面内容。随着GPU硬件能力的不断发展（包括一些超小型设备的硬件能力也有很大提升），人们开始试图使用GPU硬件能力来获得更好的性能和更少的电量消耗。使用GPU来渲染合成页面内容可以获得明显的速度的提升。</p>
+
+
+
+
+<p>硬件合成有以下几个优点：</p>
+
+
+
+
+<ul>
+<li><p>GPU在合成页面层（layer）上的效率要比CPU高很多，尤其是涉及大量像素的drawing[2]和compositing操作。当然，GPU设计出来本来就是做这些工作的。</p></li>
+<li><p>Expensive readbacks aren&rsquo;t necessary for content already on the GPU (such as accelerated video, Canvas2D, or WebGL).</p></li>
+<li><p>Parallelism between the CPU and GPU, which can operate at the same time to create an efficient graphics pipeline.</p></li>
+</ul>
+
+
+
+
+<h2>Part 1：Blink Rending 基础</h2>
+
+
+
+
+<p>Blink Rending 引擎（由Google和Opera Software开发的浏览器排版引擎）的源码十分繁多和复杂。为更好理解在chrome中GPU加速是如何工作的，我们首先需要了解Blink引擎是如何渲染页面的。</p>
+
+
+
+
+<h3>Nodes和DOM树</h3>
+
+
+
+
+<p>在Blink引擎中，页面内容是存储为由Node对象组成的树状结构，成为DOM树。每一个HTML element元素都有一个Node对象与之对应，DOM树的根节点永远都是Document Node。</p>
+
+
+
+
+<h3>从Nodes到RenderObjects</h3>
+
+
+
+
+<p>DOM树种每个node节点都有一个对应的RenderObject。RenderObject存储在与DOM树相对应的树形结构中——Render数（Render Tree）。RenderObject知道如何在屏幕上paint[3] Node内容，当然为实现这一操作，RenderObject会调用GraphicsContext来执行必要的draw[2]操作。其中，GraphicsContext就是负责将像素写入位图（bitmap）[4]中，这些位图最终会展示在屏幕上。</p>
+
+
+
+
+<p>在老的实现方式下，大部分GraphicsContext调用会去调用一个SkCanvas或者SkPlatformCanvas等等，将其paint进一个软件位图（software bitmap）中（参考<a href="http://www.chromium.org/developers/design-documents/graphics-and-skia">这篇文章</a>了解更多细节）。但是，现在painting不在放在主线程（main thread）（本文之后会讲到），这些命令现在会记录到一个SkPicture中。SkPicture是一个序列化的数据结构，它可以捕获命令并在之后重发这些命令，类似一个<a href="http://en.wikipedia.org/wiki/Display_list">display list</a></p>
+
+
+
+
+<h3>从RenderObjects到RenderLayers</h3>
+
+
+
+
+<p>每一个RenderObject都直接或间接（通过其父对象）的同一个RenderLayer相关联。</p>
+
+
+
+
+<p>一般来说，拥有相同的坐标空间（比如：受相同CSS transform影响的）的RenderObjects，属于同一个RenderLayer。RenderLayer的作用就是保证页面元素以正确的顺序合成（composited），这样才能正确的展示元素的重叠以及半透明元素等等。会有一些情形，为一些特殊的RenderObjects创建一个新的RenderLayer。一下是常见的一定会新建RenderLayer的RenderObject：</p>
+
+
+
+
+<ul>
+<li>页面的根节点的RenderObject</li>
+<li>有明确的CSS定位属性（relative，absolute或者transform）</li>
+<li>是透明的</li>
+<li>有CSS overflow、CSS alpha遮罩（alpha mash）或者CSS reflection</li>
+<li>有CSS 滤镜（fliter）</li>
+<li>3D环境或者2D加速环境的canvas元素对应的RenderObject</li>
+<li>video元素对应的RenderObject</li>
+</ul>
+
+
+
+
+<p>值得注意的是，RenderObject同RenderLayer并不是一对一的。对于上述特殊的RenderObjects，它对应于为它所创建的心得RenderLayer，而其他的RenderObjects，对应于其第一个拥有RenderLayer的父RenderObject</p>
+
+
+
+
+<p>RenderLayer也是一个树状的体系。根节点就是页面根元素所对应的RenderLayer，视觉上，每一个layer节点的后代都包含在父layer中。每一个RenderLayer的子layer保存在两个升序排列的列表中，分别是negZOrderList（负z-index的layers，即当前layer之下的layer）和posZOrderList（正z-index的layers，即当前layer之上的layer）</p>
+
+
+
+
+  </p>
+  <span class="meta">
+    written 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-03T00:10:52+08:00" data-updated="true" itemprop="datePublished"></time>
+    
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+
+  </span>
+
+  
+    <a class="full-article-link pull-right" rel="full-article" href="/blog/2014/11/03/yi-gpu-accelerated-compositing-in-chrome(gpuhe-cheng-jia-su-)/">Read on &rarr;</a>
+  
+</article>
+
+        </div>
+      </div>
       
       
       <div class="row">

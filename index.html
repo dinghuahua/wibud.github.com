@@ -9,7 +9,7 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="js, 前端 | Comments JavaScript严格模式详解 一、简介 严格模式（strict mode）是在ES5（ECMAScript 5）中引入的一种新的JavaScript运行模式，该模式下，禁止了很多JavaScript中问题较多、容易出错、影响应能的特性， &hellip;">
+	<meta name="description" content="前端 | Comments [译]GPU Accelerated Compositing in Chrome（GPU合成加速） 原文地址：http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -100,6 +100,99 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-03T00:10:52+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2014/11/03/yi-gpu-accelerated-compositing-in-chrome(gpuhe-cheng-jia-su-)/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/11/03/yi-gpu-accelerated-compositing-in-chrome(gpuhe-cheng-jia-su-)/" itemprop="url">[译]GPU Accelerated Compositing in Chrome（GPU合成加速）</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<blockquote><p>原文地址：<a href="http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome">http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome</a></p>
+
+<p>作者：Tom Wiltzius, Vangelis Kokkevis &amp; the Chrome Graphics team</p></blockquote>
+
+<h3>摘要</h3>
+
+<p>本文讲述了chrome中硬件加速合成（compositing[1]）的实现</p>
+
+<h3>简介：为什么使用硬件进行合成（compositing）</h3>
+
+<p>传统方式下，浏览器依赖CPU来渲染页面内容。随着GPU硬件能力的不断发展（包括一些超小型设备的硬件能力也有很大提升），人们开始试图使用GPU硬件能力来获得更好的性能和更少的电量消耗。使用GPU来渲染合成页面内容可以获得明显的速度的提升。</p>
+
+<p>硬件合成有以下几个优点：</p>
+
+<ul>
+<li><p>GPU在合成页面层（layer）上的效率要比CPU高很多，尤其是涉及大量像素的drawing[2]和compositing操作。当然，GPU设计出来本来就是做这些工作的。</p></li>
+<li><p>Expensive readbacks aren&rsquo;t necessary for content already on the GPU (such as accelerated video, Canvas2D, or WebGL).</p></li>
+<li><p>Parallelism between the CPU and GPU, which can operate at the same time to create an efficient graphics pipeline.</p></li>
+</ul>
+
+
+<h2>Part 1：Blink Rending 基础</h2>
+
+<p>Blink Rending 引擎（由Google和Opera Software开发的浏览器排版引擎）的源码十分繁多和复杂。为更好理解在chrome中GPU加速是如何工作的，我们首先需要了解Blink引擎是如何渲染页面的。</p>
+
+<h3>Nodes和DOM树</h3>
+
+<p>在Blink引擎中，页面内容是存储为由Node对象组成的树状结构，成为DOM树。每一个HTML element元素都有一个Node对象与之对应，DOM树的根节点永远都是Document Node。</p>
+
+<h3>从Nodes到RenderObjects</h3>
+
+<p>DOM树种每个node节点都有一个对应的RenderObject。RenderObject存储在与DOM树相对应的树形结构中——Render数（Render Tree）。RenderObject知道如何在屏幕上paint[3] Node内容，当然为实现这一操作，RenderObject会调用GraphicsContext来执行必要的draw[2]操作。其中，GraphicsContext就是负责将像素写入位图（bitmap）[4]中，这些位图最终会展示在屏幕上。</p>
+
+<p>在老的实现方式下，大部分GraphicsContext调用会去调用一个SkCanvas或者SkPlatformCanvas等等，将其paint进一个软件位图（software bitmap）中（参考<a href="http://www.chromium.org/developers/design-documents/graphics-and-skia">这篇文章</a>了解更多细节）。但是，现在painting不在放在主线程（main thread）（本文之后会讲到），这些命令现在会记录到一个SkPicture中。SkPicture是一个序列化的数据结构，它可以捕获命令并在之后重发这些命令，类似一个<a href="http://en.wikipedia.org/wiki/Display_list">display list</a></p>
+
+<h3>从RenderObjects到RenderLayers</h3>
+
+<p>每一个RenderObject都直接或间接（通过其父对象）的同一个RenderLayer相关联。</p>
+
+<p>一般来说，拥有相同的坐标空间（比如：受相同CSS transform影响的）的RenderObjects，属于同一个RenderLayer。RenderLayer的作用就是保证页面元素以正确的顺序合成（composited），这样才能正确的展示元素的重叠以及半透明元素等等。会有一些情形，为一些特殊的RenderObjects创建一个新的RenderLayer。一下是常见的一定会新建RenderLayer的RenderObject：</p>
+
+<ul>
+<li>页面的根节点的RenderObject</li>
+<li>有明确的CSS定位属性（relative，absolute或者transform）</li>
+<li>是透明的</li>
+<li>有CSS overflow、CSS alpha遮罩（alpha mash）或者CSS reflection</li>
+<li>有CSS 滤镜（fliter）</li>
+<li>3D环境或者2D加速环境的canvas元素对应的RenderObject</li>
+<li>video元素对应的RenderObject</li>
+</ul>
+
+
+<p>值得注意的是，RenderObject同RenderLayer并不是一对一的。对于上述特殊的RenderObjects，它对应于为它所创建的心得RenderLayer，而其他的RenderObjects，对应于其第一个拥有RenderLayer的父RenderObject</p>
+
+<p>RenderLayer也是一个树状的体系。根节点就是页面根元素所对应的RenderLayer，视觉上，每一个layer节点的后代都包含在父layer中。每一个RenderLayer的子layer保存在两个升序排列的列表中，分别是negZOrderList（负z-index的layers，即当前layer之下的layer）和posZOrderList（正z-index的layers，即当前layer之上的layer）</p>
+
+
+		
+		<a href="/blog/2014/11/03/yi-gpu-accelerated-compositing-in-chrome(gpuhe-cheng-jia-su-)/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -982,152 +1075,6 @@ Connection:Keep-Alive
 <p><code>display:inline-block</code>，从写法上就不难看出，它可肯定是行内元素特性inline和块级元素特性block的结合体，它具有块级元素的特点，可以设置长宽，margin和padding；又具有行内元素的特点，它不独占一行。</p>
 
 <p>那在IE6和IE7下如何实现呢，我们知道IE为盒模型设计了一个专门的属性hasLayout，如果触发行内元素的hasLayout，就能让行内元素拥有块级元素的特性，达到<code>display:inline-block</code>的效果。幸运的是设置<code>display:inline-block</code>，就可以触发hasLayout。当然在IE6和IE7下还是有局限性，我们只能对行内元素实现<code>display:inline-block</code>的效果，对于块级元素就不行了。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-31T22:06:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
-
-
-</div>
-		
-		
-          | <a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/#comments">Comments</a>
-         
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/" itemprop="url">监听DOM加载完毕</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下：</p>
-
-<ul>
-<li>解析HTML</li>
-<li>下载外部脚本样式</li>
-<li>脚本解析执行</li>
-<li>DOM完全构建完成</li>
-<li>图片等外部资源加载</li>
-<li>网页加载完毕</li>
-</ul>
-
-
-<p>那如何判断DOM是否加载完毕呢？使用body的onload事件进行监听？当然可以，但是body的onload是在所有内容，包括图片、flash啊等等内容全部加载后才触发，导致用户需要等待这部分内容加载后才能看到页面的动态内容，才能同页面进行交互，对于追(ti)求(gao)极(bi)致(ge)的程序猿来说，显然是不能接受的了，其实，只要检查如下3点足矣</p>
-
-<ul>
-<li>document</li>
-<li>document.getElementByTagName和document.getElementById</li>
-<li>document.body</li>
-</ul>
-
-
-<p>检查这三点就足够了。接着我们就可以写一个监听DOM何时加载完毕的函数了。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">domReady</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 假如DOM已经加载，马上执行函数</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nx">f</span><span class="p">();</span>
-</span><span class='line'>    <span class="c1">// 如果已经添加了一个函数</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">){</span>
-</span><span class='line'>        <span class="c1">// 把它加入待执行函数清单</span>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">f</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-</span><span class='line'>        <span class="c1">// 初始化待执行函数的数组</span>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="p">[</span><span class="nx">f</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 尽可能块的检查DOM是否已可用</span>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="nx">isDOMReady</span><span class="p">,</span> <span class="mi">13</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 检查DOM是否可用</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">isDOMReady</span><span class="p">(){</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 如果我们标记了已可用</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 检查DOM是否可用</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nb">document</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementByTag</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">){</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 如果可用，停止检查</span>
-</span><span class='line'>        <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 执行所有函数</span>
-</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
-</span><span class='line'>            <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">[</span><span class="nx">i</span><span class="p">]();</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这种方法使用起来很简单，而且不堵塞浏览器的加载。jquery的<code>ready()</code>函数功能使用的就是这种思想，当然实现的更加优雅和完备</p>
 
 		
 		

@@ -9,7 +9,12 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="js, 前端 | Comments 抛开兼容判断，可靠的DOM事件绑定 最近看到了一个很有意思的添加和删除DOM事件的方法，这个方法十分可靠，只是使用绑定事件的传统方法：element.onclick=function(){...}，但是我们知道，传统的绑定方法有一个很大的弊端， &hellip;">
+	<meta name="description" content="js, 前端 | Comments 监听DOM加载完毕 我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下： 解析HTML
+下载外部脚本样式
+脚本解析执行
+DOM完全构建完成
+图片等外部资源加载
+网页加载完毕 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -100,6 +105,152 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-31T22:06:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/js/'>js</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/05/31/jian-ting-domjia-zai-wan-bi/" itemprop="url">监听DOM加载完毕</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下：</p>
+
+<ul>
+<li>解析HTML</li>
+<li>下载外部脚本样式</li>
+<li>脚本解析执行</li>
+<li>DOM完全构建完成</li>
+<li>图片等外部资源加载</li>
+<li>网页加载完毕</li>
+</ul>
+
+
+<p>那如何判断DOM是否加载完毕呢？使用body的onload事件进行监听？当然可以，但是body的onload是在所有内容，包括图片、flash啊等等内容全部加载后才触发，导致用户需要等待这部分内容加载后才能看到页面的动态内容，才能同页面进行交互，对于追(ti)求(gao)极(bi)致(ge)的程序猿来说，显然是不能接受的了，其实，只要检查如下3点足矣</p>
+
+<ul>
+<li>document</li>
+<li>document.getElementByTagName和document.getElementById</li>
+<li>document.body</li>
+</ul>
+
+
+<p>检查这三点就足够了。接着我们就可以写一个监听DOM何时加载完毕的函数了。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">domReady</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 假如DOM已经加载，马上执行函数</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">f</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">// 如果已经添加了一个函数</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">){</span>
+</span><span class='line'>        <span class="c1">// 把它加入待执行函数清单</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 初始化待执行函数的数组</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="p">[</span><span class="nx">f</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 尽可能块的检查DOM是否已可用</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="nx">isDOMReady</span><span class="p">,</span> <span class="mi">13</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 检查DOM是否可用</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">isDOMReady</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 如果我们标记了已可用</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 检查DOM是否可用</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nb">document</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementByTag</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 如果可用，停止检查</span>
+</span><span class='line'>        <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 执行所有函数</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span><span class="p">[</span><span class="nx">i</span><span class="p">]();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">ready</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">domReady</span><span class="p">.</span><span class="nx">done</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这种方法使用起来很简单，而且不堵塞浏览器的加载。jquery的<code>ready()</code>函数功能使用的就是这种思想，当然实现的更加优雅和完备</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
