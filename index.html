@@ -9,7 +9,7 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="前端 | Comments GPU Accelerated Compositing in Chrome（GPU加速合成） 原文地址：http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in &hellip;">
+	<meta name="description" content="前端 | Comments Dive Into requestAnimationFrame 介绍 requestAnimationFrame(以下简称raf)方法，字面意思上看是：请求动画帧；较官方的解释是：通知在系统准备好绘制动画帧时调用该帧，从而为创建动画网页提供了一种更平滑更高效的方法； &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -100,6 +100,80 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-01T00:14:36+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2014/12/01/dive-into-requestanimationframe/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/12/01/dive-into-requestanimationframe/" itemprop="url">Dive Into requestAnimationFrame</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h2>介绍</h2>
+
+<p>requestAnimationFrame(以下简称raf)方法，字面意思上看是：请求动画帧；较官方的解释是：通知在系统准备好绘制动画帧时调用该帧，从而为创建动画网页提供了一种更平滑更高效的方法；那通俗一点就是：告诉浏览器说 “我这里有一帧（一些操作），需要你帮我绘制（执行）一下”，“ok，没问题，我挑个合适的时机给你绘制这一帧（执行这些操作）”</p>
+
+<p><img src="/images/private/raf-1.jpg" alt="" /></p>
+
+<ul>
+<li><p>一、浏览器的绘制（执行）时机是嘛时候</p>
+
+<p>  首先，我们需要了解的是，页面的绘制由CPU或者GPU进行的，但是其绘制频率受限于我们的显示器的刷新频率，一般显示器的刷新频率是60HZ，所以对应于绘制频率最高就是60fps（frame per second）。于是60fps也成了检验性能的一个重要的指标，be closer be better，通常来说，在30fps到60fps之间都是可以接受的。</p>
+
+<p>  60fps意味着我们执行每一帧的时间只有大约16.7ms（1000/60），这也是常见的使用setTimeout和setInterval实现动画时所设置的间隔时间。那对于raf来说呢，我们将绘制（执行）时机交给了浏览器自己进行判断，浏览器在合适的时机来绘制（执行）我们提供给浏览器的帧（操作）。浏览器如何决定这个合适时机的呢？（均基于chrome环境）</p>
+
+<blockquote><p>raf最大的调用频率不会超过60fps</p></blockquote>
+
+<p>  主观上来说，60fps已经达到了很好效果，没必要用到更快的更新频率了。貌似这一点也是chromium对于raf的设计原则之一，为了印证这一结论，特地去扒了扒chromium中raf的执行流程</p>
+
+<p>  <img src="/images/private/chromium-request-anim-frame.png" alt="" /></p>
+
+<p>  从流程图可以看到</p>
+
+<pre><code>  if (animation update pending and &gt;= 16ms since last update)
+      post task to anticipate next frame
+  else
+      post task to retry in (next_frame - now)ms
+</code></pre>
+
+<p>  如果有等待的animation更新且距离上一次更新超过16ms，则会post task，来准备下一帧，也就是说</p>
+
+<blockquote><p>针对chrome而言，无论屏幕的刷新频率是多少，raf回调函数的执行频率不会超过60次/秒</p></blockquote>
+
+<p>  找了大量的资料也没有找到raf回调的执行时机是如何计算的，唯一的途径只有看源码了，不过源码是C++，出了大学课堂就再没用过，全忘干净了。。。，大体看了看，貌似原理是：如果上一次raf的回调执行时间过长，那么触发下一次raf回调的时间就会缩短，反之亦然，目的是保证动画不丢帧。（如有错误，请轻拍~~）</p>
+
+<p>  其实，raf不需要关心屏幕什么时候刷新，也并不是在屏幕刷新的时候进行绘制，而是保证在屏幕刷新间隔内不会有两个帧的绘制而导致前一个帧丢失。</p></li>
+</ul>
+
+
+
+		
+		<a href="/blog/2014/12/01/dive-into-requestanimationframe/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -1032,60 +1106,6 @@ Connection:Keep-Alive
 <h3>明智的使用hack</h3>
 
 <p>使用hack的时候需要谨慎，有时hack会相当复杂，这会使你的CSS文件很长而且很复杂，十分不宜阅读。而且很多hack会有向后兼容的问题，这些hack是针对浏览器是否识别特殊的前缀和属性来实现的，但不能保证之后的浏览器对这些前缀和属性的识别能力。如果确实要使用hack，最好将hack放到统一的样式表中，同时一定要写好注释，便于管理。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-08T10:28:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
-
-
-</div>
-		
-		
-          | <a href="/blog/2013/07/08/floatxiao-xi-jie/#comments">Comments</a>
-         
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/2013/07/08/floatxiao-xi-jie/" itemprop="url">Float小细节</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：<code>.fl{float:left;display:inline}</code>,<code>.fr{float:right;display:inline}</code></p>
-
-<h3>为什么要在设置了<code>float:left</code>和<code>float:right</code>之外，还要设置<code>display:inline</code>呢？</h3>
-
-<p>其实这是为了解决IE6的双外边距的bug。在IE6中，如果对元素设置了浮动，同时又设置了margin-left或者margin-right的话，margin的值会加倍。解决这个问题的办法就是这是<code>display:inline</code>。所以在设计通用原子类的时候将<code>display:inline</code>引入.fl和.fr类中。</p>
-
-<h3>这样不会影响块级元素吗？</h3>
-
-<p>如果我们对块级元素赋予.fl或.fr类，其中的<code>display:inline</code>不会将块级元素变成行内元素了吗？其实这一点不用担心，<code>float:left</code>，<code>float:right</code>还有<code>position:absolute</code>，会让元素以<code>display:inline-block</code>的方式显示，就算我们设置了<code>display:inline</code>或者<code>display:block</code>，也仍然无效。</p>
-
-<h3>display:inline-block</h3>
-
-<p>disploy的值除了inline和block之外，还有一个十分有用的值：inline-block（IE6,IE7不支持，但是可以实现相同效果）。</p>
-
-<p><code>display:inline-block</code>，从写法上就不难看出，它可肯定是行内元素特性inline和块级元素特性block的结合体，它具有块级元素的特点，可以设置长宽，margin和padding；又具有行内元素的特点，它不独占一行。</p>
-
-<p>那在IE6和IE7下如何实现呢，我们知道IE为盒模型设计了一个专门的属性hasLayout，如果触发行内元素的hasLayout，就能让行内元素拥有块级元素的特性，达到<code>display:inline-block</code>的效果。幸运的是设置<code>display:inline-block</code>，就可以触发hasLayout。当然在IE6和IE7下还是有局限性，我们只能对行内元素实现<code>display:inline-block</code>的效果，对于块级元素就不行了。</p>
 
 		
 		

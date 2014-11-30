@@ -9,7 +9,7 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="All Posts GPU Accelerated Compositing in Chrome（GPU加速合成） 原文地址：http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in- &hellip;">
+	<meta name="description" content="All Posts Dive Into requestAnimationFrame 介绍 requestAnimationFrame(以下简称raf)方法，字面意思上看是：请求动画帧；较官方的解释是：通知在系统准备好绘制动画帧时调用该帧，从而为创建动画网页提供了一种更平滑更高效的方法； &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,6 +109,93 @@
 
   <div class="article-list">
     <div class="container">
+      
+      
+      <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+          <article>
+  <h2><a href="/blog/2014/12/01/dive-into-requestanimationframe/">Dive Into requestAnimationFrame</a></h2>
+  
+  <p>
+    <h2>介绍</h2>
+
+
+
+
+<p>requestAnimationFrame(以下简称raf)方法，字面意思上看是：请求动画帧；较官方的解释是：通知在系统准备好绘制动画帧时调用该帧，从而为创建动画网页提供了一种更平滑更高效的方法；那通俗一点就是：告诉浏览器说 “我这里有一帧（一些操作），需要你帮我绘制（执行）一下”，“ok，没问题，我挑个合适的时机给你绘制这一帧（执行这些操作）”</p>
+
+
+
+
+<p><img src="/images/private/raf-1.jpg" alt="" /></p>
+
+
+
+
+<ul>
+<li><p>一、浏览器的绘制（执行）时机是嘛时候</p>
+
+<p>  首先，我们需要了解的是，页面的绘制由CPU或者GPU进行的，但是其绘制频率受限于我们的显示器的刷新频率，一般显示器的刷新频率是60HZ，所以对应于绘制频率最高就是60fps（frame per second）。于是60fps也成了检验性能的一个重要的指标，be closer be better，通常来说，在30fps到60fps之间都是可以接受的。</p>
+
+<p>  60fps意味着我们执行每一帧的时间只有大约16.7ms（1000/60），这也是常见的使用setTimeout和setInterval实现动画时所设置的间隔时间。那对于raf来说呢，我们将绘制（执行）时机交给了浏览器自己进行判断，浏览器在合适的时机来绘制（执行）我们提供给浏览器的帧（操作）。浏览器如何决定这个合适时机的呢？（均基于chrome环境）</p>
+
+<blockquote><p>raf最大的调用频率不会超过60fps</p></blockquote>
+
+<p>  主观上来说，60fps已经达到了很好效果，没必要用到更快的更新频率了。貌似这一点也是chromium对于raf的设计原则之一，为了印证这一结论，特地去扒了扒chromium中raf的执行流程</p>
+
+<p>  <img src="/images/private/chromium-request-anim-frame.png" alt="" /></p>
+
+<p>  从流程图可以看到</p>
+
+<pre><code>  if (animation update pending and &gt;= 16ms since last update)
+      post task to anticipate next frame
+  else
+      post task to retry in (next_frame - now)ms
+</code></pre>
+
+<p>  如果有等待的animation更新且距离上一次更新超过16ms，则会post task，来准备下一帧，也就是说</p>
+
+<blockquote><p>针对chrome而言，无论屏幕的刷新频率是多少，raf回调函数的执行频率不会超过60次/秒</p></blockquote>
+
+<p>  找了大量的资料也没有找到raf回调的执行时机是如何计算的，唯一的途径只有看源码了，不过源码是C++，出了大学课堂就再没用过，全忘干净了。。。，大体看了看，貌似原理是：如果上一次raf的回调执行时间过长，那么触发下一次raf回调的时间就会缩短，反之亦然，目的是保证动画不丢帧。（如有错误，请轻拍~~）</p>
+
+<p>  其实，raf不需要关心屏幕什么时候刷新，也并不是在屏幕刷新的时候进行绘制，而是保证在屏幕刷新间隔内不会有两个帧的绘制而导致前一个帧丢失。</p></li>
+</ul>
+
+
+
+
+  </p>
+  <span class="meta">
+    written 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-01T00:14:36+08:00" data-updated="true" itemprop="datePublished"></time>
+    
+
+
+	<a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+
+  </span>
+
+  
+    <a class="full-article-link pull-right" rel="full-article" href="/blog/2014/12/01/dive-into-requestanimationframe/">Read on &rarr;</a>
+  
+</article>
+
+        </div>
+      </div>
       
       
       <div class="row">

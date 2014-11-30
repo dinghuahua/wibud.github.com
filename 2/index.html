@@ -9,12 +9,7 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="js, 前端 | Comments 监听DOM加载完毕 我们知道javascript是可以在DOM加载完之前就执行的，如果对没有加载的DOM元素进行操作就会导致错误。浏览器的渲染顺序大致如下： 解析HTML
-下载外部脚本样式
-脚本解析执行
-DOM完全构建完成
-图片等外部资源加载
-网页加载完毕 &hellip;">
+	<meta name="description" content="css, 前端 | Comments Float小细节 之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：.fl{float:left;display:inline},.fr{float:right;display:inline} &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -105,6 +100,60 @@ DOM完全构建完成
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-08T10:28:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/08/floatxiao-xi-jie/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/08/floatxiao-xi-jie/" itemprop="url">Float小细节</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：<code>.fl{float:left;display:inline}</code>,<code>.fr{float:right;display:inline}</code></p>
+
+<h3>为什么要在设置了<code>float:left</code>和<code>float:right</code>之外，还要设置<code>display:inline</code>呢？</h3>
+
+<p>其实这是为了解决IE6的双外边距的bug。在IE6中，如果对元素设置了浮动，同时又设置了margin-left或者margin-right的话，margin的值会加倍。解决这个问题的办法就是这是<code>display:inline</code>。所以在设计通用原子类的时候将<code>display:inline</code>引入.fl和.fr类中。</p>
+
+<h3>这样不会影响块级元素吗？</h3>
+
+<p>如果我们对块级元素赋予.fl或.fr类，其中的<code>display:inline</code>不会将块级元素变成行内元素了吗？其实这一点不用担心，<code>float:left</code>，<code>float:right</code>还有<code>position:absolute</code>，会让元素以<code>display:inline-block</code>的方式显示，就算我们设置了<code>display:inline</code>或者<code>display:block</code>，也仍然无效。</p>
+
+<h3>display:inline-block</h3>
+
+<p>disploy的值除了inline和block之外，还有一个十分有用的值：inline-block（IE6,IE7不支持，但是可以实现相同效果）。</p>
+
+<p><code>display:inline-block</code>，从写法上就不难看出，它可肯定是行内元素特性inline和块级元素特性block的结合体，它具有块级元素的特点，可以设置长宽，margin和padding；又具有行内元素的特点，它不独占一行。</p>
+
+<p>那在IE6和IE7下如何实现呢，我们知道IE为盒模型设计了一个专门的属性hasLayout，如果触发行内元素的hasLayout，就能让行内元素拥有块级元素的特性，达到<code>display:inline-block</code>的效果。幸运的是设置<code>display:inline-block</code>，就可以触发hasLayout。当然在IE6和IE7下还是有局限性，我们只能对行内元素实现<code>display:inline-block</code>的效果，对于块级元素就不行了。</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
