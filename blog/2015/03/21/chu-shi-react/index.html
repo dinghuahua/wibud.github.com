@@ -1,0 +1,666 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>初识react - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="初识react 是什么 React is a JavaScript library for creating user interfaces by Facebook and Instagram. Many people choose to think of React as the V in &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2015/03/21/chu-shi-react/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='/images/avator.jpeg' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">初识react</h1>
+	<div class="entry-content" itemprop="articleBody"><h2>是什么</h2>
+
+<blockquote><p>React is a JavaScript library for creating user interfaces by Facebook and Instagram. Many people choose to think of React as the V in MVC.</p>
+
+<p>We built React to solve one problem: building large applications with data that changes over time. To do this, React uses two main ideas.</p></blockquote>
+
+<p>套用官网的一句话</p>
+
+<blockquote><p>React可以被认为是MVC中得View层。它是用来构建数据不断变化的大型发杂应用的。</p></blockquote>
+
+<p>所以不要拿React同Angular等框架作比较了，它只是View层的框架，没有什么可比性~~</p>
+
+<p>在React中，贯穿始终的就是<code>组件</code>（组件化也是web发展的方向），React组件可以简单的认为是HTML和JavaScript的组合，通常的View层是使用一些模板工具生成，而React是通过组件的组合产出View，每个组件都可以独立或者配合使用（组件定义良好的话），其中React提供了一系列创建组件、渲染组件的方法，同时也对事件、状态等进行了封装。</p>
+
+<p>为什么说React适合数据频繁变化的应用呢？</p>
+
+<ul>
+<li>数据变化时，只需更新组件的状态，剩下的操作React都帮你做了</li>
+<li>React创造性的虚拟DOM和diff算法，使得其比传统的DOM更新更加高效，性能也更高</li>
+</ul>
+
+
+<p>这里不得不提一下<a href="http://facebook.github.io/jsx/">JSX</a>，它是和React配合使用的，当然不用也可以的（follow your heart~）。</p>
+
+<blockquote><p>JSX 是一个看起来很像 XML 的 JavaScript 语法扩展。React 可以用来做简单的 JSX 句法转换。</p></blockquote>
+
+<p>简单说来，JSX就是可以将JavaScript 语法写成XML/HTML的那个样子，举个简单的例子：</p>
+
+<pre><code>// 输入 (JSX):
+var app = &lt;Nav color="blue" /&gt;;
+// JSX 把类 XML 的语法转成原生 JavaScript，XML 元素、属性和子节点被转换成 React.createElement 的参数。
+// 经JSX转化，输出 (JS):
+var app = React.createElement(Nav, {color:"blue"});
+</code></pre>
+
+<h2>为什么</h2>
+
+<p>我是否该使用React？别急，下面我们来详细看下。</p>
+
+<h3>优点</h3>
+
+<ul>
+<li>只需要声明怎么展示，数据变化时，React自动帮你处理，不需要关心怎么更新DOM</li>
+<li>React唯一需要做的就是构建组件，组件良好的封装性，更易于代码复用和关注分离</li>
+<li>只需要查看组件的返回就能知道组件是如何渲染的，而不需要知道HTML和JS处理逻辑</li>
+<li>方便维护和扩展</li>
+</ul>
+
+
+<h3>缺点</h3>
+
+<ul>
+<li>学习成本虽然不高，但是要理解和熟练掌握还是要花一定的时间，主要是官方文档错综发杂</li>
+<li>React很年轻，社区也在发展中，相应的组件库并不丰富</li>
+<li>React只是View层，实现一些复杂应用可能需要其他框架的支持</li>
+</ul>
+
+
+<h2>怎么用</h2>
+
+<h3>如何显示</h3>
+
+<p>先来看一个官网上的简单例子：</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello React&lt;/title&gt;
+        &lt;script src="http://fb.me/react-0.13.0.js"&gt;&lt;/script&gt;
+        &lt;script src="http://fb.me/JSXTransformer-0.13.0.js"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="example"&gt;&lt;/div&gt;
+        &lt;script type="text/jsx"&gt;
+
+            var HelloWorld = React.createClass({
+
+                render: function() {
+                    return (
+                        &lt;p&gt;
+                            Hello, &lt;input type="text" placeholder="Your name here" /&gt;!
+                            It is {this.props.date.toTimeString()}
+                        &lt;/p&gt;
+                    );
+                }
+            });
+
+            setInterval(function() {
+                React.render(
+                    &lt;HelloWorld date={new Date()} /&gt;,
+                    document.getElementById('example')
+                );
+            }, 500);
+
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>在浏览器中运行这个例子，时间是每隔半秒钟变化一次。在输入框输入内容，你会发现 React 在用户界面中只改变了时间， 任何你在输入框输入的内容一直保留着，React知道哪些东西改变了，知道要更新哪些东西，并且帮你做好了。</p>
+
+<p>其中用到了JSX，使用JSX的话，需要用<code>&lt;script type="text/jsx"&gt;</code>标签包裹JSX代码。</p>
+
+<p>对这个组件的输入称为 props - &ldquo;properties&#8221;的缩写。得益于 JSX 语法，它们通过参数传递。不要去修改props的值， this.props 是只读的。</p>
+
+<p>React 组件非常简单。你可以认为它们就是简单的函数，接受 props 和 state (后面会讨论) 作为参数，然后渲染出 HTML。正是应为它们是这么的简单，这使得它们非常容易理解。</p>
+
+<h3>如何交互</h3>
+
+<p>继续上官网里例子：</p>
+
+<pre><code>var LikeButton = React.createClass({
+    getInitialState: function() {
+        return {liked: false};
+    },
+    handleClick: function(event) {
+        this.setState({liked: !this.state.liked});
+    },
+    render: function() {
+        var text = this.state.liked ? 'like' : 'haven\'t liked';
+        return (
+            &lt;p onClick={this.handleClick}&gt;
+                You {text} this. Click to toggle.
+            &lt;/p&gt;
+        );
+    }
+});
+
+React.render(
+    &lt;LikeButton /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+
+<p>在浏览器中运行这个例子，每次点击按钮，我们的文案就换了。这里我们绑定了事件，同时用到了state。</p>
+
+<p>这里的事件绑定与处理是经过React封装过得，当然封装是透明的，用起来和原生事件一样。</p>
+
+<p>可以把React组件想象成一个状态机，状态（state）改变时，就会重新渲染变化，让组件呈现的界面同数据保持一致，实现起来十分简单，只需要调用<code>setState</code>方法，改变this.state，然后React会帮我们根据新的状态来重新渲染（完全不用开发者操心）</p>
+
+<h4>使用<code>setState</code>的几点注意：</h4>
+
+<ul>
+<li><p><code>setState</code>不会立即更新state，也不会立即调用render进行重新渲染，看如下的例子</p>
+
+<pre><code>  var i = 0;
+
+  var Counter = React.createClass({
+
+      getInitialState: function(){
+
+          return {count: i};
+      },
+      handle: function(e){
+
+          i++;
+          this.setState({count: i});
+          console.log(this.state.count, 'click');
+      },
+      render: function() {
+          console.log(this.state.count, 'render');
+          return (
+              &lt;p onClick={this.handle}&gt;
+                  i = {this.state.count}
+              &lt;/p&gt;
+          );
+      }
+  });
+
+  React.render(
+      &lt;Counter /&gt;,
+      document.getElementById('example')
+  );
+</code></pre>
+
+<p>  浏览器运行这个例子，页面渲染完，控制台会打印出<code>0 "render"</code>，点击一下<p>标签，打印出<code>0 "click"</code> <code>1 "render"</code>。自己想一下，不然可以得出结论。</p></li>
+<li><p><code>setState</code>是将参数合并（merge）到this.state上，而不是替换</p></li>
+</ul>
+
+
+<h4>使用state的几点注意：</h4>
+
+<ul>
+<li>state只属于当前组件，不可传递</li>
+<li>state应该只包含那些可能改变并触发用户界面更新的数据，其他的数据应该放到props中</li>
+<li>常用的模式是创建多个只负责渲染数据的无状态（stateless）组件，在它们的上层创建一个有状态（stateful）组件并把它的状态通过 props 传给子级。这个有状态的组件封装了所有用户的交互逻辑，而这些无状态组件则负责声明式地渲染数据。</li>
+<li>state中只是存放一些元数据，更具其计算出的数据，不要放到state中，把计算放到render()中。</li>
+</ul>
+
+
+<h3>如何组合组件</h3>
+
+<p>React的很棒的特性之一就是他的组件的可组合性</p>
+
+<pre><code>var User = React.createClass({
+    render: function() {
+        return (
+            &lt;div&gt;
+                &lt;UserName name={this.props.name} /&gt;
+            &lt;/div&gt;
+        );
+    }
+});
+
+var UserName = React.createClass({
+    render: function() {
+        return (
+            &lt;p&gt;
+                {this.props.name}
+            &lt;/p&gt;
+        );
+    }
+});
+
+React.render(
+    &lt;User name="wibud" /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+
+<p>也可以很简单的实现批量添加子组件：</p>
+
+<pre><code>var User = React.createClass({
+    render: function() {
+        return (
+            &lt;div&gt;
+                {this.props.names.map(function(name){
+
+                    return &lt;UserName name={name} /&gt;
+                })}
+            &lt;/div&gt;
+        );
+    }
+});
+
+var UserName = React.createClass({
+    render: function() {
+        return (
+            &lt;p&gt;
+                {this.props.name}
+            &lt;/p&gt;
+        );
+    }
+});
+
+React.render(
+    &lt;User names={['wibud','wibud2','wibud3']} /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+
+<p>父组件和子组件可以通过props来传递数据，其中父组件可以通过this.props.children来获取子组件。</p>
+
+<p>值得注意的是：子组件会根据他们被渲染的顺序来更新DOM，如下两次渲染过程：</p>
+
+<pre><code>// 第一次渲染
+&lt;List&gt;
+    &lt;p&gt;item 1&lt;/p&gt;
+    &lt;p&gt;item 2&lt;/p&gt;
+&lt;/List&gt;
+// 第二次渲染
+&lt;List&gt;
+    &lt;p&gt;item 2&lt;/p&gt;
+&lt;/List&gt;
+</code></pre>
+
+<p>直观来看，只是删除了<code>&lt;p&gt;item 1&lt;/p&gt;</code>。事实上，React 先更新第一个子级的内容，然后删除最后一个组件。如果想要保证子组件渲染的正确顺序，即上述例子中删除<code>&lt;p&gt;item 1&lt;/p&gt;</code>，只需要给子组件加上<code>key</code>参数即可：</p>
+
+<pre><code>render: function() {
+    var results = this.props.results;
+    return (
+        &lt;ol&gt;
+            {results.map(function(result) {
+                return &lt;li key={result.id}&gt;{result.text}&lt;/li&gt;;
+            })}
+        &lt;/ol&gt;
+    );
+}
+</code></pre>
+
+<h3>如何复用组件</h3>
+
+<h4>propTypes</h4>
+
+<p>随着应用不断变大，保证组件被正确使用变得非常有用。为此我们引入 <code>propTypes    。</code>propTypes`是用来校验props数据的正确性的，如果数据类型不正确，会抛出异常。处于性能考虑，校验只在debug模式下有效。</p>
+
+<p>具体可校验类型，参考<a href="http://facebook.github.io/react/docs/reusable-components.html">这里</a></p>
+
+<p>使用起来也是超级的简单：</p>
+
+<pre><code>var MyComponent = React.createClass({
+    propTypes: {
+        children: React.PropTypes.element.isRequired
+    },
+
+    render: function() {
+        return (
+            &lt;div&gt;
+                {this.props.children} // 有且仅有一个元素，否则会抛异常。
+            &lt;/div&gt;
+        );
+    }
+});
+</code></pre>
+
+<h4>Mixins</h4>
+
+<p>组件是 React 里复用代码最佳方式，但是有时一些复杂的组件间也需要共用一些功能。React 使用 mixins 来解决这类问题。</p>
+
+<p>如下例子，我们实现了通用的setInterval的创建和销毁</p>
+
+<pre><code>var SetIntervalMixin = {
+    // 组件Render前调用
+    componentWillMount: function() {
+        this.intervals = [];
+    },
+    setInterval: function() {
+        this.intervals.push(setInterval.apply(null, arguments));
+    },
+    // 组件销毁时调用
+    componentWillUnmount: function() {
+        this.intervals.map(clearInterval);
+    }
+};
+
+var TickTock = React.createClass({
+    // 引用 mixin
+    mixins: [SetIntervalMixin],
+
+    getInitialState: function() {
+        return {seconds: 0};
+    },
+    // 组件render完后调用
+    componentDidMount: function() {
+        this.setInterval(this.tick, 1000); // 调用 mixin 的方法
+    },
+    tick: function() {
+        this.setState({seconds: this.state.seconds + 1});
+    },
+    render: function() {
+        return (
+            &lt;p&gt;
+                React has been running for {this.state.seconds} seconds.
+            &lt;/p&gt;
+        );
+    }
+});
+
+React.render(
+    &lt;TickTock /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+
+<p>mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果有多个mixin时，并用有多个 mixin 定义了同样的生命周期方法，即componentWillUnmount等方法（如：多个 mixin 都需要在组件销毁时做资源清理操作），所有这些生命周期方法都保证会被执行到。方法执行顺序是：首先按 mixin 引入顺序执行 mixin 里方法，最后执行组件内定义的方法。</p>
+
+<h3>组件生命周期</h3>
+
+<h4>组件初始化</h4>
+
+<ul>
+<li>1、getDefaultProps()</li>
+<li>2、getInitialState()</li>
+<li>3、componentWillMount()</li>
+<li>4、render()</li>
+<li>5、componentDidMount()</li>
+</ul>
+
+
+<h4>组件销毁</h4>
+
+<ul>
+<li>1、componentWillUnmount()</li>
+</ul>
+
+
+<h4>调用setState()后的更新流程</h4>
+
+<ul>
+<li>1、shouldComponentUpdate()</li>
+<li>2、componentWillUpdate()</li>
+<li>3、render()</li>
+<li>4、componentDidUpdate()</li>
+</ul>
+
+
+<h3>class和style</h3>
+
+<p>这里是针对JSX的</p>
+
+<ul>
+<li>class处理</li>
+</ul>
+
+
+<p>给节点设置样式时，需要用<code>className</code>，可以使用<code>React.addons.classSet</code>来设置多个class：</p>
+
+<pre><code>render: function(){
+    var classes = React.addons.classSet({
+        'classOne': true,   // 需要
+        'classTwo': false // 不需要
+    });
+
+    return &lt;div className={classes}&gt;&lt;/div&gt;
+}
+</code></pre>
+
+<p>渲染的结果里，div元素会只有classOne这一个样式类。</p>
+
+<ul>
+<li>内联style</li>
+</ul>
+
+
+<p>实例如下：</p>
+
+<pre><code>render: function(){
+    var styles = {
+        color: 'red',
+        height: 10
+    };
+
+    return &lt;div style={styles}&gt;&lt;/div&gt;
+}
+</code></pre>
+
+<h3>常用API</h3>
+
+<ul>
+<li><p>render()</p>
+
+<ul>
+<li>渲染组件</li>
+<li>render方法要保持简单</li>
+</ul>
+</li>
+<li><p>componentWillMount()</p>
+
+<ul>
+<li>render前调用，只触发一次</li>
+<li>可做一些初始化的工作</li>
+</ul>
+</li>
+<li><p>componentWillUnmount()</p>
+
+<ul>
+<li>组件销毁前调用</li>
+<li>做一些清理工作</li>
+</ul>
+</li>
+<li><p>getInitialState()</p>
+
+<ul>
+<li>设置初始的state值</li>
+</ul>
+</li>
+<li><p>getDefaultProps()</p>
+
+<ul>
+<li>设置默认的prop值</li>
+<li>用户未设置时，会去默认值</li>
+</ul>
+</li>
+<li>setState()
+
+<ul>
+<li>更新state</li>
+</ul>
+</li>
+</ul>
+
+
+<p>更多API参见<a href="http://facebook.github.io/react/">官网</a></p>
+
+<h3>Virtual DOM 和 Diff算法</h3>
+
+<p>有兴趣看下面的资料汇总</p>
+
+<h1>资料汇总</h1>
+
+<ul>
+<li><a href="http://facebook.github.io/react/">官网</a></li>
+<li><a href="https://github.com/facebook/react/tree/master/docs/docs">文档教程(有一部分翻译成了中文)</a></li>
+<li><a href="https://github.com/facebook/react/wiki/Complementary-Tools">Complementary Tools工具和组件</a></li>
+<li>react virtual dom
+
+<ul>
+<li><a href="http://fluentconf.com/fluent2014/public/schedule/detail/32395">The Secrets of React&rsquo;s Virtual DOM</a></li>
+<li><a href="http://stackoverflow.com/questions/21109361/why-is-reacts-concept-of-virtual-dom-said-to-be-more-performant-than-dirty-mode">Why is React&rsquo;s concept of Virtual DOM said to be more performant than dirty model checking?</a></li>
+</ul>
+</li>
+<li><a href="http://calendar.perfplanet.com/2013/diff/">react diff algorithm</a></li>
+<li><a href="https://github.com/flipboard/react-canvas">react-canvas</a>
+
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2015/02/future-of-dom.html">相关阅读</a></li>
+</ul>
+</li>
+<li><a href="https://egghead.io/series/react-flux-architecture">React: Flux Architecture</a></li>
+<li><a href="https://github.com/mhart/react-server-example">example of how to do server-side rendering with the React library</a></li>
+<li><a href="http://weibo.com/reactchina">React 中文微博</a></li>
+<li><a href="http://react-china.org/">React 中文社区</a></li>
+<li><a href="https://www.codementor.io/reactjs/tutorial/react-vs-angularjs">react-vs-angularjs</a></li>
+</ul>
+
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="初识react"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>

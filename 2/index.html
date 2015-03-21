@@ -9,7 +9,10 @@
 	<meta name="author" content="wibud">
 
 	
-	<meta name="description" content="css, 前端 | Comments Float小细节 之前看了一篇文章，它设置basse.css的时候定义了很多的通用原子类，其中的.fl和.fr类是这样写的：.fl{float:left;display:inline},.fr{float:right;display:inline} &hellip;">
+	<meta name="description" content="css, 前端 | Comments CSS Hack CSS hack方式很多，下面介绍几种常见的 IE条件注释 针对IE引入样式文件： 1
+2
+3
+&lt;!--[if IE]&gt; &lt;link type=&quot;text/CSS&quot; href=&quot;ie.css& &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -100,6 +103,126 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-11T11:02:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/qian-duan/'>前端</a>
+
+
+</div>
+		
+		
+          | <a href="/blog/2013/07/11/css-hack/#comments">Comments</a>
+         
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2013/07/11/css-hack/" itemprop="url">CSS Hack</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>CSS hack方式很多，下面介绍几种常见的</p>
+
+<h3>IE条件注释</h3>
+
+<p>针对IE引入样式文件：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">IE</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>针对特定版本的IE:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">IE</span> <span class="nt">6</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie6.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>针对某个版本范围的IE:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="o">&lt;!</span><span class="nt">--</span><span class="o">[</span><span class="nt">if</span> <span class="nt">gte</span> <span class="nt">IE</span> <span class="nt">6</span><span class="o">]&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nt">link</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span> <span class="nt">href</span><span class="o">=</span><span class="s2">&quot;ie6.css&quot;</span> <span class="nt">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;![</span><span class="nt">end</span> <span class="nt">if</span><span class="o">]</span><span class="nt">--</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中“lte“表示“小于等于”，“lt”表示“小于”，“gte”表示“大于等于”，“gt”表示“大于”，“！”表示“不等于”</p>
+
+<h3>选择符前缀</h3>
+
+<p>原理是在CSS选择符前加上一些只有特定浏览器才能识别的值，例如<code>* html</code>只对IE6及更低版本有效</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>   <span class="o">&lt;</span><span class="nt">style</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="o">*</span> <span class="nt">html</span> <span class="nc">.test</span><span class="p">{</span><span class="k">width</span><span class="o">:</span><span class="m">100%</span><span class="p">;}</span>    <span class="c">/* 只对IE6及更低版本有效 */</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>样式属性前缀</h3>
+
+<p>在样式的属性名前加上只有特定浏览器下才能生效的前缀，例如”_“只在IE6下有效</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>   <span class="o">&lt;</span><span class="nt">style</span> <span class="nt">type</span><span class="o">=</span><span class="s2">&quot;text/CSS&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="nc">.test</span><span class="p">{</span><span class="k">width</span><span class="o">:</span><span class="m">80px</span><span class="p">;</span> <span class="n">_width</span><span class="o">:</span><span class="m">70px</span><span class="p">;}</span>
+</span><span class='line'>   <span class="o">&lt;/</span><span class="nt">style</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>子选择器hack</h3>
+
+<p>使用子选择器hack，是使用了IE老版本不理解而现代浏览器能够理解的选择器，这样在IE老版本就会忽略。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'>  <span class="nt">html</span><span class="o">&gt;</span><span class="nt">body</span><span class="p">{</span>
+</span><span class='line'>    <span class="k">background-image</span><span class="o">:</span> <span class="sx">url(bg.png)</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个规则对于IE6以及之前老版本是隐藏的。</p>
+
+<h3>明智的使用hack</h3>
+
+<p>使用hack的时候需要谨慎，有时hack会相当复杂，这会使你的CSS文件很长而且很复杂，十分不宜阅读。而且很多hack会有向后兼容的问题，这些hack是针对浏览器是否识别特殊的前缀和属性来实现的，但不能保证之后的浏览器对这些前缀和属性的识别能力。如果确实要使用hack，最好将hack放到统一的样式表中，同时一定要写好注释，便于管理。</p>
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -702,7 +825,7 @@ Build Failed
 </nav>
 </div>
 			</div>
-			<footer id="footer" class="inner">Copyright &copy; 2014
+			<footer id="footer" class="inner">Copyright &copy; 2015
 
     wibud
 
