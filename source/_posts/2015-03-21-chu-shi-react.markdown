@@ -31,11 +31,13 @@ categories: 前端
 
 简单说来，JSX就是可以将JavaScript 语法写成XML/HTML的那个样子，举个简单的例子：
 
+``` javascript
 	// 输入 (JSX):
 	var app = <Nav color="blue" />;
 	// JSX 把类 XML 的语法转成原生 JavaScript，XML 元素、属性和子节点被转换成 React.createElement 的参数。
 	// 经JSX转化，输出 (JS):
 	var app = React.createElement(Nav, {color:"blue"});
+```
 
 
 ## 为什么
@@ -61,6 +63,7 @@ categories: 前端
 
 先来看一个官网上的简单例子：
 
+``` html
 	<!DOCTYPE html>
 	<html>
 		<head>
@@ -94,6 +97,7 @@ categories: 前端
 			</script>
 		</body>
 	</html>
+```
 
 在浏览器中运行这个例子，时间是每隔半秒钟变化一次。在输入框输入内容，你会发现 React 在用户界面中只改变了时间， 任何你在输入框输入的内容一直保留着，React知道哪些东西改变了，知道要更新哪些东西，并且帮你做好了。
 
@@ -103,10 +107,13 @@ categories: 前端
 
 React 组件非常简单。你可以认为它们就是简单的函数，接受 props 和 state (后面会讨论) 作为参数，然后渲染出 HTML。正是应为它们是这么的简单，这使得它们非常容易理解。
 
+<!-- more -->
+
 ### 如何交互
 
 继续上官网里例子：
 
+``` javascript
 	var LikeButton = React.createClass({
 		getInitialState: function() {
 			return {liked: false};
@@ -128,7 +135,8 @@ React 组件非常简单。你可以认为它们就是简单的函数，接受 p
 		<LikeButton />,
 		document.getElementById('example')
 	);
-	
+```	
+
 在浏览器中运行这个例子，每次点击按钮，我们的文案就换了。这里我们绑定了事件，同时用到了state。
 
 这里的事件绑定与处理是经过React封装过得，当然封装是透明的，用起来和原生事件一样。
@@ -139,6 +147,8 @@ React 组件非常简单。你可以认为它们就是简单的函数，接受 p
 
 + `setState`不会立即更新state，也不会立即调用render进行重新渲染，看如下的例子
 
+``` javascript
+	
 		var i = 0;
 
 		var Counter = React.createClass({
@@ -168,7 +178,9 @@ React 组件非常简单。你可以认为它们就是简单的函数，接受 p
 			document.getElementById('example')
 		);
 		
-	浏览器运行这个例子，页面渲染完，控制台会打印出`0 "render"`，点击一下<p>标签，打印出`0 "click"` `1 "render"`。自己想一下，不然可以得出结论。
+```
+		
+浏览器运行这个例子，页面渲染完，控制台会打印出`0 "render"`，点击一下<p>标签，打印出`0 "click"` `1 "render"`。自己想一下，不然可以得出结论。
 	
 + `setState`是将参数合并（merge）到this.state上，而不是替换
 
@@ -183,6 +195,7 @@ React 组件非常简单。你可以认为它们就是简单的函数，接受 p
 
 React的很棒的特性之一就是他的组件的可组合性
 
+``` javascript
 	var User = React.createClass({
 		render: function() {
 			return (
@@ -207,9 +220,11 @@ React的很棒的特性之一就是他的组件的可组合性
 		<User name="wibud" />,
 		document.getElementById('example')
 	);
+```
 	
 也可以很简单的实现批量添加子组件：
-
+	
+``` javascript
 	var User = React.createClass({
 		render: function() {
 			return (
@@ -237,11 +252,13 @@ React的很棒的特性之一就是他的组件的可组合性
 		<User names={['wibud','wibud2','wibud3']} />,
 		document.getElementById('example')
 	);
+```
 	
 父组件和子组件可以通过props来传递数据，其中父组件可以通过this.props.children来获取子组件。
 
 值得注意的是：子组件会根据他们被渲染的顺序来更新DOM，如下两次渲染过程：
 
+``` html
 	// 第一次渲染
 	<List>
 		<p>item 1</p>
@@ -251,9 +268,11 @@ React的很棒的特性之一就是他的组件的可组合性
 	<List>
 		<p>item 2</p>
 	</List>
+```
 	
 直观来看，只是删除了`<p>item 1</p>`。事实上，React 先更新第一个子级的内容，然后删除最后一个组件。如果想要保证子组件渲染的正确顺序，即上述例子中删除`<p>item 1</p>`，只需要给子组件加上`key`参数即可：
 
+``` javascript
 	render: function() {
 		var results = this.props.results;
 		return (
@@ -264,6 +283,7 @@ React的很棒的特性之一就是他的组件的可组合性
 			</ol>
 		);
 	}
+```
 	
 ### 如何复用组件
 
@@ -275,6 +295,7 @@ React的很棒的特性之一就是他的组件的可组合性
 
 使用起来也是超级的简单：
 
+``` javascript
 	var MyComponent = React.createClass({
 		propTypes: {
 			children: React.PropTypes.element.isRequired
@@ -288,6 +309,7 @@ React的很棒的特性之一就是他的组件的可组合性
 			);
 		}
 	});
+```
 
 #### Mixins
 
@@ -295,6 +317,7 @@ React的很棒的特性之一就是他的组件的可组合性
 
 如下例子，我们实现了通用的setInterval的创建和销毁
 
+``` javascript
 	var SetIntervalMixin = {
 		// 组件Render前调用
 		componentWillMount: function() {
@@ -336,7 +359,8 @@ React的很棒的特性之一就是他的组件的可组合性
 		<TickTock />,
 		document.getElementById('example')
 	);
-	
+```	
+
 mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果有多个mixin时，并用有多个 mixin 定义了同样的生命周期方法，即componentWillUnmount等方法（如：多个 mixin 都需要在组件销毁时做资源清理操作），所有这些生命周期方法都保证会被执行到。方法执行顺序是：首先按 mixin 引入顺序执行 mixin 里方法，最后执行组件内定义的方法。
 
 ### 组件生命周期
@@ -368,6 +392,7 @@ mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果�
 
 给节点设置样式时，需要用`className`，可以使用`React.addons.classSet`来设置多个class：
 
+``` javascript
 	render: function(){
 		var classes = React.addons.classSet({
 			'classOne': true,	// 需要
@@ -376,6 +401,7 @@ mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果�
 		
 		return <div className={classes}></div>
 	}
+```
 	
 渲染的结果里，div元素会只有classOne这一个样式类。
 
@@ -383,6 +409,7 @@ mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果�
 
 实例如下：
 
+``` javascript
 	render: function(){
 		var styles = {
 			color: 'red',
@@ -391,6 +418,7 @@ mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果�
 		
 		return <div style={styles}></div>
 	}
+```
 
 ### 常用API
 
