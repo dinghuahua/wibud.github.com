@@ -4,7 +4,7 @@
   <title><![CDATA[Winter Bud]]></title>
   <link href="http://wibud.github.io/atom.xml" rel="self"/>
   <link href="http://wibud.github.io/"/>
-  <updated>2015-03-21T16:20:27+08:00</updated>
+  <updated>2015-04-10T21:46:59+08:00</updated>
   <id>http://wibud.github.io/</id>
   <author>
     <name><![CDATA[wibud]]></name>
@@ -12,6 +12,351 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[touch标准草案整理]]></title>
+    <link href="http://wibud.github.io/blog/2015/04/10/touchbiao-zhun-cao-an-zheng-li/"/>
+    <updated>2015-04-10T21:23:17+08:00</updated>
+    <id>http://wibud.github.io/blog/2015/04/10/touchbiao-zhun-cao-an-zheng-li</id>
+    <content type="html"><![CDATA[<h1>touch事件</h1>
+
+<p>现在对于touch事件还没有正式标准出来的，只有一个推荐草案，<a href="http://www.w3.org/TR/touch-events/">看草案戳这里</a>。当然，没有正式标准不代表没有浏览器支持，目前很多浏览器是可以支持touch的，可以从caniuse上看一下具体的支持情况</p>
+
+<p><img src="http://gtms01.alicdn.com/tps/i1/TB1jPv4FFXXXXXnaXXXHXUOSFXX-938-375.jpg" alt="" /></p>
+
+<p><a href="http://caniuse.com/#search=touch">支持情况戳这里</a>。</p>
+
+<p>详细了解touch事件，还是很有必要看一下草案的（全英文好烦。。。心里一万头草泥马呼啸而过）</p>
+
+<p>首先看一下两个概念，便于之后的阅读：</p>
+
+<ul>
+<li>touch point（触点）：说白了就是咱手指点触摸屏时，与屏幕接触的那个坐标点</li>
+<li>active touch point（活跃触点）：当前在屏幕上，且可以被浏览器追踪（捕获）到的触点。详细说来，当从一个触点上触发了touchstart事件，触点就激活了，变身成为活跃触点了，当在触点上触发了touchend和touchcancel事件时，触点就被移除或者不在被浏览器追踪了，此时这个活跃触点就挂掉了。</li>
+</ul>
+
+
+<h2>定义接口对象</h2>
+
+<h3>Touch：</h3>
+
+<blockquote><p>描述touch point（触点）的对象。Touch对象创建之后，属性不可修改。</p></blockquote>
+
+<pre><code>interface Touch {
+  readonly    attribute long        identifier;
+  readonly    attribute EventTarget target;
+  readonly    attribute long        screenX;
+  readonly    attribute long        screenY;
+  readonly    attribute long        clientX;
+  readonly    attribute long        clientY;
+  readonly    attribute long        pageX;
+  readonly    attribute long        pageY;
+};
+</code></pre>
+
+<blockquote><p>Attributes属性详解：</p></blockquote>
+
+<ul>
+<li><p>clientX：触点相对视口的水平坐标（像素），不包括任何滚动偏移量</p></li>
+<li><p>clientY：触点相对视口的垂直坐标（像素），不包括任何滚动偏移量</p></li>
+<li><p>identifier：touch point（触点）的唯一识别码。当一个触点被激活（active touch point）时，它会被分配一个标示符，用于区分其他激活的触点（多点触摸的情景）当触点保持活跃（啥叫保持活跃？手指头放到屏幕上不离开，所对应的触点就一直是活跃的，不管咱是手指点着不动，还是不断滑动。当然触发touchcancel的话就不在这个范畴内了），引用到它的所有事件必须为其分配相同的标识符，保证每个触点有唯一的标示符。</p></li>
+<li><p>pageX：触点相对视口的水平坐标（像素），包括滚动偏移量</p></li>
+<li><p>pageY：触点相对视口的垂直坐标（像素），包括滚动偏移量</p></li>
+<li><p>screenX：触点相对屏幕的水平坐标（像素）</p></li>
+<li><p>screenY：触点相对屏幕的垂直坐标（像素）</p></li>
+<li><p>target：eventtarget，和其他事件的target一样</p></li>
+</ul>
+
+
+<h3>TouchList</h3>
+
+<blockquote><p>定义了Touch对象的列表，不可修改，支持索引</p></blockquote>
+
+<pre><code>interface TouchList {
+  readonly    attribute unsigned long length;
+  getter Touch? item (unsigned long index);
+};
+</code></pre>
+
+<blockquote><p>Attributes：</p></blockquote>
+
+<ul>
+<li>length：不解释，都知道的</li>
+</ul>
+
+
+<blockquote><p>Metods：</p></blockquote>
+
+<ul>
+<li>item：返回索引值对应的Touch对象</li>
+</ul>
+
+
+<!-- more -->
+
+
+<h3>TouchEvent</h3>
+
+<blockquote><p>这个接口定义了touchstart、touchend、touchmove、touchcancel的事件类型。对象是immutable的。创建初始化后，属性不可修改</p></blockquote>
+
+<pre><code>interface TouchEvent : UIEvent {
+  readonly    attribute TouchList touches;
+  readonly    attribute TouchList targetTouches;
+  readonly    attribute TouchList changedTouches;
+  readonly    attribute boolean   altKey;
+  readonly    attribute boolean   metaKey;
+  readonly    attribute boolean   ctrlKey;
+  readonly    attribute boolean   shiftKey;
+};
+</code></pre>
+
+<blockquote><p>Attributes：</p></blockquote>
+
+<ul>
+<li>altKey：boolean。Alt（按着）</li>
+<li>changedTouches：TouchList类型，存放所有触点Touch。对于touchstart事件来说，changedTouches维护的是刚被激活的触点的列表（active touch event）。对于touchmove事件，changedTouches维护的是从上一次事件（touchstart）开始被移动的触点的列表。对于touchend和touchcancel事件，维护的是刚被移除的触点的列表。</li>
+<li>ctrlKey：boolean。ctrl键是否被激活（按着）</li>
+<li>metaKey：boolean。meta键是否被激活（按着）</li>
+<li>shiftKey：boolean。shift键是否被激活（按着）</li>
+<li>targetTouches：TouchList类型。作用于当前事件目标元素（target）上的触点列表。</li>
+<li>touches：当前触摸屏幕的所有触点。</li>
+</ul>
+
+
+<h2>TouchEvent</h2>
+
+<p><img src="http://gtms04.alicdn.com/tps/i4/TB1Fy2lFpXXXXazbpXXa8NO8VXX-1197-176.jpg" alt="TouchEvent" /></p>
+
+<p>直接上图吧，就不翻译了，相(jiu)信(bu)大(xiu)家(yin)也(yu)看(xia)得(xian)懂(le)</p>
+
+<h3>touchstart</h3>
+
+<p>当咱触摸屏幕时，就产生该事件。该事件的target必须是Element元素。</p>
+
+<p>如果事件回调里调用preventDefault方法阻止了默认行为，则会阻止所有同该事件相关联的触点引发的其他行为，比如鼠标事件或滚动事件。简单说，就是咱为一个元素绑定了touchstart事件，回调中preventDefault了，那么手指点着这个元素然后拖动，是没有滚动效果的，被preventDefault阻止了。</p>
+
+<h3>touchend</h3>
+
+<p>当用户从屏幕移除一个触点时触发该事件，简单说就是手指抬起来离开屏幕了。这个事件的target是触点第一次放置在屏幕上所对应的Element元素，即和touchstart事件的target是相同的。</p>
+
+<p>即使触点离开了这个target element，target也是不会改变的。所有移除的触点只存放在changedTouches中，touches和targetTouches中是不会有移除的触点的。</p>
+
+<h3>touchmove</h3>
+
+<p>当用户沿着触摸屏移动触点时触发该事件。这个事件的target是触点第一次放置在屏幕上所对应的Element元素，即和touchstart事件的target是相同的。</p>
+
+<p>即使触点离开了这个target element，target也是不会改变的。</p>
+
+<p>浏览器触发touchmove事件的频率应该是可以定义的（只是应该。。。现在还没有浏览器支持设置这个频率），并且可能是依赖硬件和其他实现细节的。</p>
+
+<p>如果在touchmove事件回调中调用preventDefault方法，则会阻止所有同该事件相关联的触点引发的其他行为，比如滚动。</p>
+
+<h3>touchcancel</h3>
+
+<p>触点收其他因素影响，比如：同步事件或者触点从文档窗口进入了能处理用户交互的非文档窗口（比如UA的本地用户界面，插件），不懂，求科普。</p>
+
+<p>所有移除的触点存放在changedTouches中，touches和targetTouches中是不会有移除的触点的。</p>
+
+<h2>Exemple</h2>
+
+<h3>touches and targetTouches of a TouchEvent，官方demo</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchstart&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">item</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * If the first touch on the surface is also targeting the</span>
+</span><span class='line'><span class="cm">       * &quot;touchable&quot; element, the code below should execute.</span>
+</span><span class='line'><span class="cm">       * Since targetTouches is a subset of touches which covers the</span>
+</span><span class='line'><span class="cm">       * entire surface, TouchEvent.touches &gt;= TouchEvents.targetTouches</span>
+</span><span class='line'><span class="cm">       * is always true.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>        <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello Touch Events!&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * If all of the active touch points are on the &quot;touchable&quot;</span>
+</span><span class='line'><span class="cm">       * element, the length properties should be the same.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>       <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;All points are on target element&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * On a single touch input device, there can only be one point</span>
+</span><span class='line'><span class="cm">       * of contact on the surface, so the following code can only</span>
+</span><span class='line'><span class="cm">       * execute when the terminal supports multiple touches.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>       <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello Multiple Touch!&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>  <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>changedTouches of a TouchEvent，官方demo</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchend&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Example output when three touch points are on the surface,</span>
+</span><span class='line'><span class="cm">     * two of them being on the &quot;touchable&quot; element and one point</span>
+</span><span class='line'><span class="cm">     * in the &quot;touchable&quot; element is lifted from the surface:</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * Touch points removed: 1</span>
+</span><span class='line'><span class="cm">     * Touch points left on element: 1</span>
+</span><span class='line'><span class="cm">     * Touch points left on document: 2</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Removed: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Remaining on element: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Remaining on document: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>target</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchstart&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchend&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">         * 手指滑出touchable元素的范围，target依然同touchstart的target相同</span>
+</span><span class='line'><span class="cm">         * 单触时，touches和targetTouches的length为0</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchmove&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="cm">/*</span>
+</span><span class='line'><span class="cm">         * target同touchstart的target相同</span>
+</span><span class='line'><span class="cm">         * 单触时，touches和targetTouches的length为0</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>延伸阅读</h2>
+
+<p><a href="http://www.w3.org/TR/touch-events/">W3C Touch Events</a></p>
+
+<p><a href="http://www.w3.org/TR/pointerevents/">W3C Pointer Events</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[初识react]]></title>
@@ -46,12 +391,18 @@
 
 <p>简单说来，JSX就是可以将JavaScript 语法写成XML/HTML的那个样子，举个简单的例子：</p>
 
-<pre><code>// 输入 (JSX):
-var app = &lt;Nav color="blue" /&gt;;
-// JSX 把类 XML 的语法转成原生 JavaScript，XML 元素、属性和子节点被转换成 React.createElement 的参数。
-// 经JSX转化，输出 (JS):
-var app = React.createElement(Nav, {color:"blue"});
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// 输入 (JSX):</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nx">Nav</span> <span class="nx">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span> <span class="o">/&gt;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">// JSX 把类 XML 的语法转成原生 JavaScript，XML 元素、属性和子节点被转换成 React.createElement 的参数。</span>
+</span><span class='line'><span class="c1">// 经JSX转化，输出 (JS):</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">Nav</span><span class="p">,</span> <span class="p">{</span><span class="nx">color</span><span class="o">:</span><span class="s2">&quot;blue&quot;</span><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>为什么</h2>
 
@@ -82,40 +433,74 @@ var app = React.createElement(Nav, {color:"blue"});
 
 <p>先来看一个官网上的简单例子：</p>
 
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;Hello React&lt;/title&gt;
-        &lt;script src="http://fb.me/react-0.13.0.js"&gt;&lt;/script&gt;
-        &lt;script src="http://fb.me/JSXTransformer-0.13.0.js"&gt;&lt;/script&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;div id="example"&gt;&lt;/div&gt;
-        &lt;script type="text/jsx"&gt;
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span><span class='line'><span class="nt">&lt;html&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;title&gt;</span>Hello React<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://fb.me/react-0.13.0.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://fb.me/JSXTransformer-0.13.0.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;example&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/jsx&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">HelloWorld</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>
+</span><span class='line'>              <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                  <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>                      <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>                          <span class="nx">Hello</span><span class="p">,</span> <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="nx">placeholder</span><span class="o">=</span><span class="s2">&quot;Your name here&quot;</span> <span class="o">/&gt;!</span>
+</span><span class='line'>                          <span class="nx">It</span> <span class="nx">is</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">date</span><span class="p">.</span><span class="nx">toTimeString</span><span class="p">()}</span>
+</span><span class='line'>                      <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>                  <span class="p">);</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>          <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>                  <span class="o">&lt;</span><span class="nx">HelloWorld</span> <span class="nx">date</span><span class="o">=</span><span class="p">{</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()}</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>                  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'>              <span class="p">);</span>
+</span><span class='line'>          <span class="p">},</span> <span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nt">&lt;/script&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-            var HelloWorld = React.createClass({
-
-                render: function() {
-                    return (
-                        &lt;p&gt;
-                            Hello, &lt;input type="text" placeholder="Your name here" /&gt;!
-                            It is {this.props.date.toTimeString()}
-                        &lt;/p&gt;
-                    );
-                }
-            });
-
-            setInterval(function() {
-                React.render(
-                    &lt;HelloWorld date={new Date()} /&gt;,
-                    document.getElementById('example')
-                );
-            }, 500);
-
-        &lt;/script&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
 
 <p>在浏览器中运行这个例子，时间是每隔半秒钟变化一次。在输入框输入内容，你会发现 React 在用户界面中只改变了时间， 任何你在输入框输入的内容一直保留着，React知道哪些东西改变了，知道要更新哪些东西，并且帮你做好了。</p>
 
@@ -125,32 +510,59 @@ var app = React.createElement(Nav, {color:"blue"});
 
 <p>React 组件非常简单。你可以认为它们就是简单的函数，接受 props 和 state (后面会讨论) 作为参数，然后渲染出 HTML。正是应为它们是这么的简单，这使得它们非常容易理解。</p>
 
+<!-- more -->
+
+
 <h3>如何交互</h3>
 
 <p>继续上官网里例子：</p>
 
-<pre><code>var LikeButton = React.createClass({
-    getInitialState: function() {
-        return {liked: false};
-    },
-    handleClick: function(event) {
-        this.setState({liked: !this.state.liked});
-    },
-    render: function() {
-        var text = this.state.liked ? 'like' : 'haven\'t liked';
-        return (
-            &lt;p onClick={this.handleClick}&gt;
-                You {text} this. Click to toggle.
-            &lt;/p&gt;
-        );
-    }
-});
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">LikeButton</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">getInitialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">{</span><span class="nx">liked</span><span class="o">:</span> <span class="kc">false</span><span class="p">};</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">handleClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">liked</span><span class="o">:</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">liked</span><span class="p">});</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">liked</span> <span class="o">?</span> <span class="s1">&#39;like&#39;</span> <span class="o">:</span> <span class="s1">&#39;haven\&#39;t liked&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">p</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleClick</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="nx">You</span> <span class="p">{</span><span class="nx">text</span><span class="p">}</span> <span class="k">this</span><span class="p">.</span> <span class="nx">Click</span> <span class="nx">to</span> <span class="nx">toggle</span><span class="p">.</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">LikeButton</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-React.render(
-    &lt;LikeButton /&gt;,
-    document.getElementById('example')
-);
-</code></pre>
+
+<p></p>
 
 <p>在浏览器中运行这个例子，每次点击按钮，我们的文案就换了。这里我们绑定了事件，同时用到了state。</p>
 
@@ -161,40 +573,75 @@ React.render(
 <h4>使用<code>setState</code>的几点注意：</h4>
 
 <ul>
-<li><p><code>setState</code>不会立即更新state，也不会立即调用render进行重新渲染，看如下的例子</p>
+<li><code>setState</code>不会立即更新state，也不会立即调用render进行重新渲染，看如下的例子</li>
+</ul>
 
-<pre><code>  var i = 0;
 
-  var Counter = React.createClass({
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">Counter</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">getInitialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">return</span> <span class="p">{</span><span class="nx">count</span><span class="o">:</span> <span class="nx">i</span><span class="p">};</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">handle</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">count</span><span class="o">:</span> <span class="nx">i</span><span class="p">});</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span><span class="p">,</span> <span class="s1">&#39;click&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>              <span class="o">&lt;</span><span class="nx">p</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handle</span><span class="p">}</span><span class="o">&gt;</span>
+</span><span class='line'>                  <span class="nx">i</span> <span class="o">=</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span>
+</span><span class='line'>              <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>          <span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">Counter</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">);</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
 
-      getInitialState: function(){
 
-          return {count: i};
-      },
-      handle: function(e){
+<p>浏览器运行这个例子，页面渲染完，控制台会打印出<code>0 "render"</code>，点击一下<p>标签，打印出<code>0 "click"</code> <code>1 "render"</code>。自己想一下，不然可以得出结论。</p>
 
-          i++;
-          this.setState({count: i});
-          console.log(this.state.count, 'click');
-      },
-      render: function() {
-          console.log(this.state.count, 'render');
-          return (
-              &lt;p onClick={this.handle}&gt;
-                  i = {this.state.count}
-              &lt;/p&gt;
-          );
-      }
-  });
-
-  React.render(
-      &lt;Counter /&gt;,
-      document.getElementById('example')
-  );
-</code></pre>
-
-<p>  浏览器运行这个例子，页面渲染完，控制台会打印出<code>0 "render"</code>，点击一下<p>标签，打印出<code>0 "click"</code> <code>1 "render"</code>。自己想一下，不然可以得出结论。</p></li>
-<li><p><code>setState</code>是将参数合并（merge）到this.state上，而不是替换</p></li>
+<ul>
+<li><code>setState</code>是将参数合并（merge）到this.state上，而不是替换</li>
 </ul>
 
 
@@ -212,91 +659,165 @@ React.render(
 
 <p>React的很棒的特性之一就是他的组件的可组合性</p>
 
-<pre><code>var User = React.createClass({
-    render: function() {
-        return (
-            &lt;div&gt;
-                &lt;UserName name={this.props.name} /&gt;
-            &lt;/div&gt;
-        );
-    }
-});
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">User</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="o">&lt;</span><span class="nx">UserName</span> <span class="nx">name</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span> <span class="o">/&gt;</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">UserName</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">User</span> <span class="nx">name</span><span class="o">=</span><span class="s2">&quot;wibud&quot;</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-var UserName = React.createClass({
-    render: function() {
-        return (
-            &lt;p&gt;
-                {this.props.name}
-            &lt;/p&gt;
-        );
-    }
-});
-
-React.render(
-    &lt;User name="wibud" /&gt;,
-    document.getElementById('example')
-);
-</code></pre>
 
 <p>也可以很简单的实现批量添加子组件：</p>
 
-<pre><code>var User = React.createClass({
-    render: function() {
-        return (
-            &lt;div&gt;
-                {this.props.names.map(function(name){
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">User</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">names</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>                  <span class="k">return</span> <span class="o">&lt;</span><span class="nx">UserName</span> <span class="nx">name</span><span class="o">=</span><span class="p">{</span><span class="nx">name</span><span class="p">}</span> <span class="o">/&gt;</span>
+</span><span class='line'>              <span class="p">})}</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">UserName</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">User</span> <span class="nx">names</span><span class="o">=</span><span class="p">{[</span><span class="s1">&#39;wibud&#39;</span><span class="p">,</span><span class="s1">&#39;wibud2&#39;</span><span class="p">,</span><span class="s1">&#39;wibud3&#39;</span><span class="p">]}</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-                    return &lt;UserName name={name} /&gt;
-                })}
-            &lt;/div&gt;
-        );
-    }
-});
-
-var UserName = React.createClass({
-    render: function() {
-        return (
-            &lt;p&gt;
-                {this.props.name}
-            &lt;/p&gt;
-        );
-    }
-});
-
-React.render(
-    &lt;User names={['wibud','wibud2','wibud3']} /&gt;,
-    document.getElementById('example')
-);
-</code></pre>
 
 <p>父组件和子组件可以通过props来传递数据，其中父组件可以通过this.props.children来获取子组件。</p>
 
 <p>值得注意的是：子组件会根据他们被渲染的顺序来更新DOM，如下两次渲染过程：</p>
 
-<pre><code>// 第一次渲染
-&lt;List&gt;
-    &lt;p&gt;item 1&lt;/p&gt;
-    &lt;p&gt;item 2&lt;/p&gt;
-&lt;/List&gt;
-// 第二次渲染
-&lt;List&gt;
-    &lt;p&gt;item 2&lt;/p&gt;
-&lt;/List&gt;
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>// 第一次渲染
+</span><span class='line'><span class="nt">&lt;List&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>item 1<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>item 2<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;/List&gt;</span>
+</span><span class='line'>// 第二次渲染
+</span><span class='line'><span class="nt">&lt;List&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;p&gt;</span>item 2<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'><span class="nt">&lt;/List&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>直观来看，只是删除了<code>&lt;p&gt;item 1&lt;/p&gt;</code>。事实上，React 先更新第一个子级的内容，然后删除最后一个组件。如果想要保证子组件渲染的正确顺序，即上述例子中删除<code>&lt;p&gt;item 1&lt;/p&gt;</code>，只需要给子组件加上<code>key</code>参数即可：</p>
 
-<pre><code>render: function() {
-    var results = this.props.results;
-    return (
-        &lt;ol&gt;
-            {results.map(function(result) {
-                return &lt;li key={result.id}&gt;{result.text}&lt;/li&gt;;
-            })}
-        &lt;/ol&gt;
-    );
-}
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">results</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">ol</span><span class="o">&gt;</span>
+</span><span class='line'>          <span class="p">{</span><span class="nx">results</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="k">return</span> <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">key</span><span class="o">=</span><span class="p">{</span><span class="nx">result</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">result</span><span class="p">.</span><span class="nx">text</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/li&gt;;</span>
+</span><span class='line'>          <span class="p">})}</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/ol&gt;</span>
+</span><span class='line'>  <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>如何复用组件</h3>
 
@@ -308,20 +829,34 @@ React.render(
 
 <p>使用起来也是超级的简单：</p>
 
-<pre><code>var MyComponent = React.createClass({
-    propTypes: {
-        children: React.PropTypes.element.isRequired
-    },
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">MyComponent</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">propTypes</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">children</span><span class="o">:</span> <span class="nx">React</span><span class="p">.</span><span class="nx">PropTypes</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">isRequired</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span> <span class="c1">// 有且仅有一个元素，否则会抛异常。</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
 
-    render: function() {
-        return (
-            &lt;div&gt;
-                {this.props.children} // 有且仅有一个元素，否则会抛异常。
-            &lt;/div&gt;
-        );
-    }
-});
-</code></pre>
 
 <h4>Mixins</h4>
 
@@ -329,48 +864,92 @@ React.render(
 
 <p>如下例子，我们实现了通用的setInterval的创建和销毁</p>
 
-<pre><code>var SetIntervalMixin = {
-    // 组件Render前调用
-    componentWillMount: function() {
-        this.intervals = [];
-    },
-    setInterval: function() {
-        this.intervals.push(setInterval.apply(null, arguments));
-    },
-    // 组件销毁时调用
-    componentWillUnmount: function() {
-        this.intervals.map(clearInterval);
-    }
-};
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">SetIntervalMixin</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">// 组件Render前调用</span>
+</span><span class='line'>  <span class="nx">componentWillMount</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">intervals</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">setInterval</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">intervals</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">setInterval</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="c1">// 组件销毁时调用</span>
+</span><span class='line'>  <span class="nx">componentWillUnmount</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">intervals</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">clearInterval</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">TickTock</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+</span><span class='line'>  <span class="c1">// 引用 mixin</span>
+</span><span class='line'>  <span class="nx">mixins</span><span class="o">:</span> <span class="p">[</span><span class="nx">SetIntervalMixin</span><span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">getInitialState</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">{</span><span class="nx">seconds</span><span class="o">:</span> <span class="mi">0</span><span class="p">};</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="c1">// 组件render完后调用</span>
+</span><span class='line'>  <span class="nx">componentDidMount</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">setInterval</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">tick</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span> <span class="c1">// 调用 mixin 的方法</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">tick</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="nx">seconds</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">seconds</span> <span class="o">+</span> <span class="mi">1</span><span class="p">});</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>              <span class="nx">React</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">running</span> <span class="k">for</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">seconds</span><span class="p">}</span> <span class="nx">seconds</span><span class="p">.</span>
+</span><span class='line'>          <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>      <span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nx">TickTock</span> <span class="o">/&gt;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;example&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-var TickTock = React.createClass({
-    // 引用 mixin
-    mixins: [SetIntervalMixin],
 
-    getInitialState: function() {
-        return {seconds: 0};
-    },
-    // 组件render完后调用
-    componentDidMount: function() {
-        this.setInterval(this.tick, 1000); // 调用 mixin 的方法
-    },
-    tick: function() {
-        this.setState({seconds: this.state.seconds + 1});
-    },
-    render: function() {
-        return (
-            &lt;p&gt;
-                React has been running for {this.state.seconds} seconds.
-            &lt;/p&gt;
-        );
-    }
-});
-
-React.render(
-    &lt;TickTock /&gt;,
-    document.getElementById('example')
-);
-</code></pre>
+<p></p>
 
 <p>mixin相当于把通过mixin定义的方法属性赋到组件对象中，如果有多个mixin时，并用有多个 mixin 定义了同样的生命周期方法，即componentWillUnmount等方法（如：多个 mixin 都需要在组件销毁时做资源清理操作），所有这些生命周期方法都保证会被执行到。方法执行顺序是：首先按 mixin 引入顺序执行 mixin 里方法，最后执行组件内定义的方法。</p>
 
@@ -415,15 +994,24 @@ React.render(
 
 <p>给节点设置样式时，需要用<code>className</code>，可以使用<code>React.addons.classSet</code>来设置多个class：</p>
 
-<pre><code>render: function(){
-    var classes = React.addons.classSet({
-        'classOne': true,   // 需要
-        'classTwo': false // 不需要
-    });
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">classes</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">addons</span><span class="p">.</span><span class="nx">classSet</span><span class="p">({</span>
+</span><span class='line'>      <span class="s1">&#39;classOne&#39;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 需要</span>
+</span><span class='line'>      <span class="s1">&#39;classTwo&#39;</span><span class="o">:</span> <span class="kc">false</span> <span class="c1">// 不需要</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="k">return</span> <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">classes</span><span class="p">}</span><span class="o">&gt;&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-    return &lt;div className={classes}&gt;&lt;/div&gt;
-}
-</code></pre>
 
 <p>渲染的结果里，div元素会只有classOne这一个样式类。</p>
 
@@ -434,15 +1022,24 @@ React.render(
 
 <p>实例如下：</p>
 
-<pre><code>render: function(){
-    var styles = {
-        color: 'red',
-        height: 10
-    };
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">styles</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">color</span><span class="o">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">height</span><span class="o">:</span> <span class="mi">10</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="k">return</span> <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">style</span><span class="o">=</span><span class="p">{</span><span class="nx">styles</span><span class="p">}</span><span class="o">&gt;&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-    return &lt;div style={styles}&gt;&lt;/div&gt;
-}
-</code></pre>
 
 <h3>常用API</h3>
 

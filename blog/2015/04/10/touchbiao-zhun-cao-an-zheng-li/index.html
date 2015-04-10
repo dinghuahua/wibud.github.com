@@ -1,0 +1,498 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>touch标准草案整理 - Winter Bud</title>
+	<meta name="author" content="wibud">
+
+	
+	<meta name="description" content="Touch标准草案整理 touch事件 现在对于touch事件还没有正式标准出来的，只有一个推荐草案，看草案戳这里。当然，没有正式标准不代表没有浏览器支持，目前很多浏览器是可以支持touch的，可以从caniuse上看一下具体的支持情况 支持情况戳这里。 详细了解touch事件， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Winter Bud" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://wibud.github.io/blog/2015/04/10/touchbiao-zhun-cao-an-zheng-li/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="/javascripts/libs/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.profilepic').append("<img src='/images/avator.jpeg' alt='Profile Picture' style='width: 160px;' />");
+		});
+	</script>
+	
+</div>
+
+<nav id="main-nav">
+<section class="aboutme">
+  <i>Winter Bud</i>
+  <p>
+    UED程序猿；专业前端，业余JAVA；爱鼓捣、瞎折腾；讲的了段子，写的了代码
+  </p>
+</section>
+
+<ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:wi_bud@163.com" title="Email">Email</a>
+		
+		
+		
+		
+		
+			<a class="github" href="https://github.com/wibud" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+		
+			<a class="weibo" href="http://weibo.com/u/2435540027" title="weibo">Weibo</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Touch标准草案整理</h1>
+	<div class="entry-content" itemprop="articleBody"><h1>touch事件</h1>
+
+<p>现在对于touch事件还没有正式标准出来的，只有一个推荐草案，<a href="http://www.w3.org/TR/touch-events/">看草案戳这里</a>。当然，没有正式标准不代表没有浏览器支持，目前很多浏览器是可以支持touch的，可以从caniuse上看一下具体的支持情况</p>
+
+<p><img src="http://gtms01.alicdn.com/tps/i1/TB1jPv4FFXXXXXnaXXXHXUOSFXX-938-375.jpg" alt="" /></p>
+
+<p><a href="http://caniuse.com/#search=touch">支持情况戳这里</a>。</p>
+
+<p>详细了解touch事件，还是很有必要看一下草案的（全英文好烦。。。心里一万头草泥马呼啸而过）</p>
+
+<p>首先看一下两个概念，便于之后的阅读：</p>
+
+<ul>
+<li>touch point（触点）：说白了就是咱手指点触摸屏时，与屏幕接触的那个坐标点</li>
+<li>active touch point（活跃触点）：当前在屏幕上，且可以被浏览器追踪（捕获）到的触点。详细说来，当从一个触点上触发了touchstart事件，触点就激活了，变身成为活跃触点了，当在触点上触发了touchend和touchcancel事件时，触点就被移除或者不在被浏览器追踪了，此时这个活跃触点就挂掉了。</li>
+</ul>
+
+
+<h2>定义接口对象</h2>
+
+<h3>Touch：</h3>
+
+<blockquote><p>描述touch point（触点）的对象。Touch对象创建之后，属性不可修改。</p></blockquote>
+
+<pre><code>interface Touch {
+  readonly    attribute long        identifier;
+  readonly    attribute EventTarget target;
+  readonly    attribute long        screenX;
+  readonly    attribute long        screenY;
+  readonly    attribute long        clientX;
+  readonly    attribute long        clientY;
+  readonly    attribute long        pageX;
+  readonly    attribute long        pageY;
+};
+</code></pre>
+
+<blockquote><p>Attributes属性详解：</p></blockquote>
+
+<ul>
+<li><p>clientX：触点相对视口的水平坐标（像素），不包括任何滚动偏移量</p></li>
+<li><p>clientY：触点相对视口的垂直坐标（像素），不包括任何滚动偏移量</p></li>
+<li><p>identifier：touch point（触点）的唯一识别码。当一个触点被激活（active touch point）时，它会被分配一个标示符，用于区分其他激活的触点（多点触摸的情景）当触点保持活跃（啥叫保持活跃？手指头放到屏幕上不离开，所对应的触点就一直是活跃的，不管咱是手指点着不动，还是不断滑动。当然触发touchcancel的话就不在这个范畴内了），引用到它的所有事件必须为其分配相同的标识符，保证每个触点有唯一的标示符。</p></li>
+<li><p>pageX：触点相对视口的水平坐标（像素），包括滚动偏移量</p></li>
+<li><p>pageY：触点相对视口的垂直坐标（像素），包括滚动偏移量</p></li>
+<li><p>screenX：触点相对屏幕的水平坐标（像素）</p></li>
+<li><p>screenY：触点相对屏幕的垂直坐标（像素）</p></li>
+<li><p>target：eventtarget，和其他事件的target一样</p></li>
+</ul>
+
+
+<h3>TouchList</h3>
+
+<blockquote><p>定义了Touch对象的列表，不可修改，支持索引</p></blockquote>
+
+<pre><code>interface TouchList {
+  readonly    attribute unsigned long length;
+  getter Touch? item (unsigned long index);
+};
+</code></pre>
+
+<blockquote><p>Attributes：</p></blockquote>
+
+<ul>
+<li>length：不解释，都知道的</li>
+</ul>
+
+
+<blockquote><p>Metods：</p></blockquote>
+
+<ul>
+<li>item：返回索引值对应的Touch对象</li>
+</ul>
+
+
+<!-- more -->
+
+
+<h3>TouchEvent</h3>
+
+<blockquote><p>这个接口定义了touchstart、touchend、touchmove、touchcancel的事件类型。对象是immutable的。创建初始化后，属性不可修改</p></blockquote>
+
+<pre><code>interface TouchEvent : UIEvent {
+  readonly    attribute TouchList touches;
+  readonly    attribute TouchList targetTouches;
+  readonly    attribute TouchList changedTouches;
+  readonly    attribute boolean   altKey;
+  readonly    attribute boolean   metaKey;
+  readonly    attribute boolean   ctrlKey;
+  readonly    attribute boolean   shiftKey;
+};
+</code></pre>
+
+<blockquote><p>Attributes：</p></blockquote>
+
+<ul>
+<li>altKey：boolean。Alt（按着）</li>
+<li>changedTouches：TouchList类型，存放所有触点Touch。对于touchstart事件来说，changedTouches维护的是刚被激活的触点的列表（active touch event）。对于touchmove事件，changedTouches维护的是从上一次事件（touchstart）开始被移动的触点的列表。对于touchend和touchcancel事件，维护的是刚被移除的触点的列表。</li>
+<li>ctrlKey：boolean。ctrl键是否被激活（按着）</li>
+<li>metaKey：boolean。meta键是否被激活（按着）</li>
+<li>shiftKey：boolean。shift键是否被激活（按着）</li>
+<li>targetTouches：TouchList类型。作用于当前事件目标元素（target）上的触点列表。</li>
+<li>touches：当前触摸屏幕的所有触点。</li>
+</ul>
+
+
+<h2>TouchEvent</h2>
+
+<p><img src="http://gtms04.alicdn.com/tps/i4/TB1Fy2lFpXXXXazbpXXa8NO8VXX-1197-176.jpg" alt="TouchEvent" /></p>
+
+<p>直接上图吧，就不翻译了，相(jiu)信(bu)大(xiu)家(yin)也(yu)看(xia)得(xian)懂(le)</p>
+
+<h3>touchstart</h3>
+
+<p>当咱触摸屏幕时，就产生该事件。该事件的target必须是Element元素。</p>
+
+<p>如果事件回调里调用preventDefault方法阻止了默认行为，则会阻止所有同该事件相关联的触点引发的其他行为，比如鼠标事件或滚动事件。简单说，就是咱为一个元素绑定了touchstart事件，回调中preventDefault了，那么手指点着这个元素然后拖动，是没有滚动效果的，被preventDefault阻止了。</p>
+
+<h3>touchend</h3>
+
+<p>当用户从屏幕移除一个触点时触发该事件，简单说就是手指抬起来离开屏幕了。这个事件的target是触点第一次放置在屏幕上所对应的Element元素，即和touchstart事件的target是相同的。</p>
+
+<p>即使触点离开了这个target element，target也是不会改变的。所有移除的触点只存放在changedTouches中，touches和targetTouches中是不会有移除的触点的。</p>
+
+<h3>touchmove</h3>
+
+<p>当用户沿着触摸屏移动触点时触发该事件。这个事件的target是触点第一次放置在屏幕上所对应的Element元素，即和touchstart事件的target是相同的。</p>
+
+<p>即使触点离开了这个target element，target也是不会改变的。</p>
+
+<p>浏览器触发touchmove事件的频率应该是可以定义的（只是应该。。。现在还没有浏览器支持设置这个频率），并且可能是依赖硬件和其他实现细节的。</p>
+
+<p>如果在touchmove事件回调中调用preventDefault方法，则会阻止所有同该事件相关联的触点引发的其他行为，比如滚动。</p>
+
+<h3>touchcancel</h3>
+
+<p>触点收其他因素影响，比如：同步事件或者触点从文档窗口进入了能处理用户交互的非文档窗口（比如UA的本地用户界面，插件），不懂，求科普。</p>
+
+<p>所有移除的触点存放在changedTouches中，touches和targetTouches中是不会有移除的触点的。</p>
+
+<h2>Exemple</h2>
+
+<h3>touches and targetTouches of a TouchEvent，官方demo</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchstart&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">item</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">item</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * If the first touch on the surface is also targeting the</span>
+</span><span class='line'><span class="cm">       * &quot;touchable&quot; element, the code below should execute.</span>
+</span><span class='line'><span class="cm">       * Since targetTouches is a subset of touches which covers the</span>
+</span><span class='line'><span class="cm">       * entire surface, TouchEvent.touches &gt;= TouchEvents.targetTouches</span>
+</span><span class='line'><span class="cm">       * is always true.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>        <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello Touch Events!&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * If all of the active touch points are on the &quot;touchable&quot;</span>
+</span><span class='line'><span class="cm">       * element, the length properties should be the same.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>       <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;All points are on target element&#39;</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * On a single touch input device, there can only be one point</span>
+</span><span class='line'><span class="cm">       * of contact on the surface, so the following code can only</span>
+</span><span class='line'><span class="cm">       * execute when the terminal supports multiple touches.</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>       <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello Multiple Touch!&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>  <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>changedTouches of a TouchEvent，官方demo</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchend&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Example output when three touch points are on the surface,</span>
+</span><span class='line'><span class="cm">     * two of them being on the &quot;touchable&quot; element and one point</span>
+</span><span class='line'><span class="cm">     * in the &quot;touchable&quot; element is lifted from the surface:</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * Touch points removed: 1</span>
+</span><span class='line'><span class="cm">     * Touch points left on element: 1</span>
+</span><span class='line'><span class="cm">     * Touch points left on document: 2</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Removed: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Remaining on element: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>      <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Remaining on document: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>target</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s1">&#39;touchable&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">This</span> <span class="nx">element</span> <span class="nx">is</span> <span class="nx">touchable</span><span class="p">.</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span><span class='line'>      <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchstart&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchstart targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchend&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="cm">/*</span>
+</span><span class='line'><span class="cm">         * 手指滑出touchable元素的范围，target依然同touchstart的target相同</span>
+</span><span class='line'><span class="cm">         * 单触时，touches和targetTouches的length为0</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchend targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;touchable&#39;</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;touchmove&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ev</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="cm">/*</span>
+</span><span class='line'><span class="cm">         * target同touchstart的target相同</span>
+</span><span class='line'><span class="cm">         * 单触时，touches和targetTouches的length为0</span>
+</span><span class='line'><span class="cm">         */</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove target: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove changedTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">changedTouches</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove touches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">touches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;touchmove targetTouches: &#39;</span> <span class="o">+</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">targetTouches</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>延伸阅读</h2>
+
+<p><a href="http://www.w3.org/TR/touch-events/">W3C Touch Events</a></p>
+
+<p><a href="http://www.w3.org/TR/pointerevents/">W3C Pointer Events</a></p>
+</div>
+
+</article>
+
+	<div class="share">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- Duoshuo Comment BEGIN -->
+<div class="ds-thread" data-title="Touch标准草案整理"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"wibud"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    wibud
+
+
+<!-- Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a> &#8211;>
+</footer>
+		</div>
+	</div>
+	
+
+
+
+
+
+
+<!-- 
+ -->
+
+
+</body>
+</html>
